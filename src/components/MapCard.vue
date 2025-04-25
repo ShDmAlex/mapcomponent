@@ -11,15 +11,54 @@
        />     
     </div>
   </div>
+  <div class="chart-card chart-card-second">
+    <div class="card-header">Общий уровень смертности и рождаемости, чел. на 1 тыс. чел.</div>
+    <div class="card-content">
+    <div class="table-container">
+              <table class="region-table">
+                <thead>
+                  <tr>
+                    <th>Регион</th>
+                    <th>Рождаемость</th>
+                    <th>Смертность</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="region in regionItems" :key="region.id">
+                  <td>{{ region.name }}</td>
+                  <td>{{ region.fertility['2024'] }}</td>
+                  <td>{{ region.mortality['2024'] }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+  </div>
+  <div class="chart-card chart-card-third">
+    <div class="card-header">Смертность и рождаемость, чел. на 1 тыс. чел.</div>
+    </div>
+    <div class="chart-card chart-card-four">
+      <div class="card-header">Смертность, чел. на 1 тыс. чел.</div>
+      <div class="card-content">
+        <road-chart
+              :height="roadChart.height"
+              :data-source="roadChart.dataSource"
+            />
+      </div>
+      </div>
 </div>
   </template>
 <script>
 
 import MapComponent from './MapComponent.vue';
+import RoadChart from './RoadChart.vue';
 
 export default {
   name: 'MapCard',
-  components: { MapComponent },
+  components: { 
+    MapComponent,
+    RoadChart,
+   },
   data() {
     return {
           regionItems: [
@@ -132,10 +171,27 @@ export default {
                   name: "г. Петропавловск",
                   svgClass: "fnt-city",
                   percentage: '○ г. Петропавловск - 87.3%',
-                  fertility: { 2023: '', 2024: '' },
-                  mortality: { 2023: '', 2024: '' },
+                  fertility: { 2023: '10.36', 2024: '9.53' },
+                  mortality: { 2023: '10.14', 2024: '11.22' },
                 },
             ],
+            roadChart: {
+        height: 240,
+        dataSource: {
+          series: [
+            {
+              name: '2023',
+              data: [6.52, 10.47, 8.61],
+            },
+            {
+              name: '2024',
+              data: [2.1, 9.83, 6.47],
+            },
+          ],
+          categories: ['Материнская', 'Детская до 5 лет', 'Младенческая до года'],
+          colors: ['#f3a100', '#a0c913'],
+        },
+      },
     }
 },
 methods: {
