@@ -1,0 +1,140 @@
+.grid-container {
+    display: flex;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-rows: auto auto;
+    gap: 10px;
+    font-family: 'Montserrat-Regular';
+    padding-right: 10px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  .chart-card {
+    position: relative;
+    background-color: #2e2c2c;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%; 
+    height: calc(100vh / 2 - 32px); 
+  }
+  .chart-card-first {
+    grid-column: 1; 
+    width: 50%;
+    height: calc(100vh / 2 - 32px);
+  }
+  .card-header {
+    font-size: 15px;
+    color: #ffffff;
+    background-color: #4d4a4a;
+    padding: 7px;
+    text-align: left;
+    border-radius: 10px 10px 0 0;
+  }
+  .card-content {
+    padding: 10px;
+    flex-grow: 1;
+  }
+  .svg-map .str0 {
+    stroke: #252429;
+    stroke-width: 25;
+    cursor: pointer;
+  }
+  .svg-map .fnt0, .svg-map .fnt-city {
+    font-weight: normal;
+    font-size: 700px;
+    fill: #fff;
+    cursor: pointer;
+  }
+  .map-container {
+    position: relative;
+    width: 100%;
+    height: calc(100vh / 2 - 82px);
+    display: flex; 
+    justify-content: center;
+    align-items: right;
+  }
+  .svg-map {
+    width: 100%;
+    height: 100%;
+  }
+  .svg-map path.selected {
+    fill: #d89210 !important;
+    transition: fill 0.5s ease;
+  }
+  .tooltip {
+    position: fixed;
+    background: rgba(82, 79, 79, 0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    transition: opacity 0.3s;
+    opacity: 0.8;
+    transform: translate(10px, 10px);
+    cursor: pointer;
+    width: 220px;
+    height: 140px;
+  }
+  .tooltip.tooltip-small {
+    width: 90px;
+    height: auto;
+    padding: 5px 2px;
+    font-size: 12px;
+    text-align: center;
+  }
+  .tooltip-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .tooltip-title {
+    font-size: 13px;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    
+  }
+  .tooltip-section {
+    margin-bottom: 3px;
+  }
+  .tooltip-year-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 5px; 
+  }
+  .tooltip-year {
+    display: block;
+    margin-top: 3px;
+  }
+  .tooltip-icon {
+    margin-left: 5px;
+    font-size: 14px;
+  }
+  .fertility-icon {
+    color: #ff4040;
+  }
+  .mortality-icon {
+    color: #40ff40;
+  }
+  .reset-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    padding: 2px 4px;
+    background-color: rgb(56, 52, 52); 
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 1000; 
+  }
+  .reset-btn:hover {
+    background-color: #555352;
+  }
+  .hidden {
+      opacity: 0; 
+      pointer-events: none;
+      display: none;
+  }
+  
