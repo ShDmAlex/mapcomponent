@@ -7,7 +7,7 @@
        :region-items="regionItems"
        :path-data-customization-method="customizePathColors"
        :text-data-customization-method="customizePathTexts"
-       :zoom-on-select="false"
+       
        />     
     </div>
   </div>
