@@ -163,10 +163,21 @@
     color: #fff;
     
   }
-  .region-table td:first-child {
-    white-space: nowrap; 
-    text-align: left; 
-  }
+  .region-table th:first-child,
+.region-table td:first-child {
+  width: 70%; 
+  white-space: nowrap;
+  text-align: left;
+}
+
+
+.region-table th:nth-child(2),
+.region-table td:nth-child(2),
+.region-table th:nth-child(3),
+.region-table td:nth-child(3) {
+  width: 15%; 
+  text-align: center; 
+}
   .table-container {
     flex-grow: 1;
     overflow-y: auto; 
@@ -180,7 +191,7 @@
   }
   .region-table td {
     border-radius: 5px;
-    padding: 3px;
+    padding: 2px;
   }
   
   .region-table th {
@@ -207,24 +218,49 @@
     color: #ffffff;
     
   }
-  .progress-bar {
+  .progress-bar-container {
     display: inline-block;
+    width: 100px; 
     height: 19px;
-    line-height: 19px; /* Выравниваем текст по центру по вертикали */
+    border-radius: 4px;
+    position: relative; 
+    background: rgba(0, 0, 0, 0.1); 
+    
+  }
+  
+  
+  td:nth-child(2) .progress-bar-container {
+    background: rgba(76, 175, 80, 0.3);
+    
+  }
+  
+  
+  td:nth-child(3) .progress-bar-container {
+    background: rgba(120, 144, 156, 0.3); 
+  }
+  
+  .progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    line-height: 19px; 
     border-radius: 4px;
     padding: 0 8px;
     color: #fff;
     font-size: 11px;
-    min-width: 40px; /* Минимальная ширина для читаемости текста */
     box-sizing: border-box;
+    white-space: nowrap; 
+    min-width: 40px; 
   }
+  
   .fertility-bar {
-    background-color: #4CAF50; /* Зеленый цвет для рождаемости, как на скриншоте */
+    background-color: #4CAF50; 
   }
+  
   .mortality-bar {
-    background-color: #78909C; /* Серый цвет для смертности, как на скриншоте */
+    background-color: #78909C; 
   }
-
   .stats-container {
     display: flex;
     flex-direction: column;
@@ -264,11 +300,11 @@
   }
   
   .stats-value.fertility {
-    color: #4CAF50; /* Зеленый цвет для рождаемости */
+    color: #4CAF50; 
   }
   
   .stats-value.mortality {
-    color: #78909C; /* Серый цвет для смертности */
+    color: #78909C; 
   }
   
   .stats-icon {
@@ -278,9 +314,9 @@
   }
   
   .stats-icon i.fa-baby-carriage {
-    color: #4CAF50; /* Зеленая коляска */
+    color: #4CAF50; 
   }
   
   .stats-icon i.fa-cross {
-    color: #78909C; /* Серое надгробие */
+    color: #78909C; 
   }

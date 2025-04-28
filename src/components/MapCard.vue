@@ -8,40 +8,46 @@
        :path-data-customization-method="customizePathColors"
        :text-data-customization-method="customizePathTexts"
        :zoom-on-select="false"
+       :selected-region-id="selectedRegionId"
+       @region-selected="handleRegionSelect"
        />     
     </div>
   </div>
   <div class="chart-card chart-card-second">
-    <div class="card-header">Общий уровень смертности и рождаемости, чел. на 1 тыс. чел.</div>
-    <div class="card-content">
+  <div class="card-header">Общий уровень смертности и рождаемости, чел. на 1 тыс. чел.</div>
+  <div class="card-content">
     <div class="table-container">
-              <table class="region-table">
-                <thead>
-                  <tr>
-                    <th>Регион</th>
-                    <th>Рождаемость</th>
-                    <th>Смертность</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="region in regionItems" :key="region.id">
+      <table class="region-table">
+        <thead>
+          <tr>
+            <th>Регион</th>
+            <th>Рождаемость</th>
+            <th>Смертность</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="region in regionItems" :key="region.id">
             <td>{{ region.name }}</td>
             <td>
-              <div class="progress-bar fertility-bar" :style="{ width: (parseFloat(region.fertility['2024']) / 15 * 100) + '%' }">
-                {{ region.fertility['2024'] }}
+              <div class="progress-bar-container">
+                <div class="progress-bar fertility-bar" :style="{ width: (parseFloat(region.fertility['2024']) / 15 * 100) + '%' }">
+                  {{ region.fertility['2024'] }}
+                </div>
               </div>
             </td>
             <td>
-              <div class="progress-bar mortality-bar" :style="{ width: (parseFloat(region.mortality['2024']) / 15 * 100) + '%' }">
-                {{ region.mortality['2024'] }}
+              <div class="progress-bar-container">
+                <div class="progress-bar mortality-bar" :style="{ width: (parseFloat(region.mortality['2024']) / 15 * 100) + '%' }">
+                  {{ region.mortality['2024'] }}
+                </div>
               </div>
             </td>
           </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+        </tbody>
+      </table>
+    </div>
   </div>
+</div>
   <div class="chart-card chart-card-third">
     <div class="card-header">Смертность и рождаемость, чел. на 1 тыс. чел.</div>
     <div class="card-content">
@@ -103,6 +109,7 @@ export default {
    },
   data() {
     return {
+      selectedRegionId: null,
           regionItems: [
                 {
                   id: 4,
@@ -111,6 +118,11 @@ export default {
                   percentage: '62.5%',
                   fertility: { 2023: '11.24', 2024: '9.82' },
                   mortality: { 2023: '12.01', 2024: '12.28' },
+                  chartData: {
+                    maternal: { 2023: 0, 2024: 0 }, 
+                    child: { 2023: 0, 2024: 0 }, 
+                    infant: { 2023: 0, 2024: 0 }, 
+                },
                 },
                 {
                   id: 5,
@@ -119,6 +131,11 @@ export default {
                   percentage: '100%',
                   fertility: { 2023: '14.11', 2024: '12.06' },
                   mortality: { 2023: '9.46', 2024: '8.97' },
+                  chartData: {
+                    maternal: { 2023: '0', 2024: '0' }, 
+                    child: { 2023: '0', 2024: '0' }, 
+                    infant: { 2023: '0', 2024: '0' }, 
+                },
                 },
                 {
                   id: 10,
@@ -127,6 +144,11 @@ export default {
                   percentage: '',
                   fertility: { 2023: '9.29', 2024: '7.72' },
                   mortality: { 2023: '13.4', 2024: '15.28' },
+                  chartData: {
+                    maternal: { 2023: '0', 2024: '0' }, 
+                    child: { 2023: '0', 2024: '0' }, 
+                    infant: { 2023: '0', 2024: '0' }, 
+                },
                 },
                 {
                   id: 3,
@@ -135,6 +157,11 @@ export default {
                   percentage: '100%',
                   fertility: { 2023: '9.68', 2024: '8.71' },
                   mortality: { 2023: '12.05', 2024: '10.59' },
+                  chartData: {
+                    maternal: { 2023: '0', 2024: '0' }, 
+                    child: { 2023: '0', 2024: '0' }, 
+                    infant: { 2023: '0', 2024: '0' }, 
+                },
                 },
                 {
                   id: 9,
@@ -143,6 +170,11 @@ export default {
                   percentage: '17.1%',
                   fertility: { 2023: '9.37', 2024: '9.02' },
                   mortality: { 2023: '13.21', 2024: '12.82' },
+                  chartData: {
+                    maternal: { 2023: '0', 2024: '0' }, 
+                    child: { 2023: '0', 2024: '0' }, 
+                    infant: { 2023: '0', 2024: '7.14' }, 
+                },
                 },
                 {
                   id: 7,
@@ -151,6 +183,11 @@ export default {
                   percentage: '0%',
                   fertility: { 2023: '10.81', 2024: '11.28' },
                   mortality: { 2023: '10.76', 2024: '13.03' },
+                  chartData: {
+                    maternal: { 2023: '0', 2024: '0' }, 
+                    child: { 2023: '0', 2024: '0' }, 
+                    infant: { 2023: '0', 2024: '6.76' }, 
+                },
                 },
                 {
                   id: 1,
@@ -159,6 +196,11 @@ export default {
                   percentage: '76%',
                   fertility: { 2023: '9.97', 2024: '9.29' },
                   mortality: { 2023: '10.36', 2024: '10.52' },
+                  chartData: {
+                    maternal: { 2023: '0', 2024: '0' }, 
+                    child: { 2023: '0', 2024: '0' }, 
+                    infant: { 2023: '0', 2024: '6.17' }, 
+                },
                 },
                 {
                   id: 6,
@@ -167,6 +209,11 @@ export default {
                   percentage: '36%',
                   fertility: { 2023: '9.12', 2024: '10.61' },
                   mortality: { 2023: '12.66', 2024: '13.53' },
+                  chartData: {
+                    maternal: { 2023: '0', 2024: '0' }, 
+                    child: { 2023: '0', 2024: '0' }, 
+                    infant: { 2023: '0', 2024: '18.96' }, 
+                },
                 },
                 {
                   id: 12,
@@ -175,6 +222,11 @@ export default {
                   percentage: '',
                   fertility: { 2023: '10.59', 2024: '10.23' },
                   mortality: { 2023: '13.23', 2024: '12.65' },
+                  chartData: {
+                    maternal: { 2023: '0', 2024: '0' }, 
+                    child: { 2023: '0', 2024: '0' }, 
+                    infant: { 2023: '0', 2024: '7.63' }, 
+                },
                 },
                 {
                   id: 2,
@@ -183,6 +235,11 @@ export default {
                   percentage: '21.7%',
                   fertility: { 2023: '10.43', 2024: '10.02' },
                   mortality: { 2023: '11.88', 2024: '10.43' },
+                  chartData: {
+                    maternal: { 2023: '0', 2024: '0' }, 
+                    child: { 2023: '0', 2024: '0' }, 
+                    infant: { 2023: '0', 2024: '6.83' }, 
+                },
                 },
                 {
                   id: 11,
@@ -191,6 +248,11 @@ export default {
                   percentage: '',
                   fertility: { 2023: '9.31', 2024: '9.92' },
                   mortality: { 2023: '11.46', 2024: '12.58' },
+                  chartData: {
+                    maternal: { 2023: '0', 2024: '0' }, 
+                    child: { 2023: '0', 2024: '0' }, 
+                    infant: { 2023: '0', 2024: '14.08' }, 
+                },
                 },
                 {
                   id: 0,
@@ -199,6 +261,11 @@ export default {
                   percentage: '35.3%',
                   fertility: { 2023: '16.09', 2024: '14.61' },
                   mortality: { 2023: '8.2', 2024: '7.41' },
+                  chartData: {
+                    maternal: { 2023: '0', 2024: '0' }, 
+                    child: { 2023: '0', 2024: '0' }, 
+                    infant: { 2023: '0', 2024: '0' }, 
+                },
                 },
                 {
                   id: 8,
@@ -207,6 +274,11 @@ export default {
                   percentage: '100%',
                   fertility: { 2023: '11.29', 2024: '11.07' },
                   mortality: { 2023: '13.53', 2024: '14.05' },
+                  chartData: {
+                    maternal: { 2023: '0', 2024: '0' }, 
+                    child: { 2023: '0', 2024: '0' }, 
+                    infant: { 2023: '0', 2024: '0' }, 
+                },
                 },
                 {
                   id: '1-city',
@@ -215,20 +287,32 @@ export default {
                   percentage: '○ г. Петропавловск - 87.3%',
                   fertility: { 2023: '10.36', 2024: '9.53' },
                   mortality: { 2023: '10.14', 2024: '11.22' },
+                  chartData: {
+                    maternal: { 2023: '0', 2024: '0' }, 
+                    child: { 2023: '0', 2024: '0' }, 
+                    infant: { 2023: '0', 2024: '8.21' }, 
+                },
+                },
+                {
+                  id: 13,
+                  name: "СКО",
+                  svgClass: "fil13",
+                  percentage: '',
+                  fertility: { 2023: '10.47', 2024: '9.81' },
+                  mortality: { 2023: '11.08', 2024: '11.52' },
+                  chartData: {
+                    maternal: { 2023: '6.52', 2024: '2.1' }, 
+                    child: { 2023: '10.47', 2024: '9.83' }, 
+                    infant: { 2023: '8.61', 2024: '6.47' }, 
+                },
                 },
             ],
-roadChart: {
-        height: 240,
+            roadChart: {
+        height: 260,
         dataSource: {
           series: [
-            {
-              name: '2023',
-              data: [6.52, 10.47, 8.61],
-            },
-            {
-              name: '2024',
-              data: [2.1, 9.83, 6.47],
-            },
+            { name: '2023', data: [0, 0, 0] },
+            { name: '2024', data: [0, 0, 0] },
           ],
           categories: ['Материнская', 'Детская до 5 лет', 'Младенческая до года'],
           colors: ['#f3a100', '#a0c913'],
@@ -236,13 +320,64 @@ roadChart: {
       },
     }
 },
+mounted() {
+    this.updateRoadChartData(); // Инициализируем данные диаграммы при монтировании
+  },
+  watch: {
+    selectedRegionId() {
+      this.updateRoadChartData(); // Обновляем данные диаграммы при изменении региона
+    },
+  },
 methods: {
+  handleRegionSelect(regionId) {
+    console.log('Region selected with ID:', regionId);
+      this.selectedRegionId = regionId; // Обновляем selectedRegionId при выборе региона
+    },
+    updateRoadChartData() {
+      const defaultData = {
+        series: [
+          { name: '2023', data: [0, 0, 0] },
+          { name: '2024', data: [0, 0, 0] },
+        ],
+        categories: ['Материнская', 'Детская до 5 лет', 'Младенческая до года'],
+        colors: ['#f3a100', '#a0c913'],
+      };
+
+      if (!this.selectedRegion || !this.selectedRegion.chartData) {
+        this.roadChart.dataSource = defaultData;
+        return;
+      }
+
+      const { maternal, child, infant } = this.selectedRegion.chartData;
+      this.roadChart.dataSource = {
+        series: [
+          {
+            name: '2023',
+            data: [
+              maternal?.[2023] ?? 0,
+              child?.[2023] ?? 0,
+              infant?.[2023] ?? 0,
+            ],
+          },
+          {
+            name: '2024',
+            data: [
+              maternal?.[2024] ?? 0,
+              child?.[2024] ?? 0,
+              infant?.[2024] ?? 0,
+            ],
+          },
+        ],
+        categories: ['Материнская', 'Детская до 5 лет', 'Младенческая до года'],
+        colors: ['#f3a100', '#a0c913'],
+      };
+    },
 customizePathColors() {
       const styles = {};
       this.regionItems.forEach((region) => {
         const regionId = String(region.id);
         if (region.percentage) {
-          const percentage = parseFloat(region.percentage);
+          const percentage = parseFloat(region.percentage) || 0;
           if (percentage >= 75) {
             styles[regionId] = 'rgb(104, 159, 56)'; 
           } else if (percentage >= 25) {
@@ -270,9 +405,13 @@ customizePathTexts() {
       return [...this.regionItems].sort((a, b) => a.name.localeCompare(b.name));
     },
     selectedRegion() {
-      return this.sortedRegions.length ? this.sortedRegions[0] : null;
+      if (this.selectedRegionId) {
+        return this.regionItems.find(region => region.id === this.selectedRegionId) || null;
+      }
+      return this.regionItems.find(region => String(region.id) === '13') || null;
     },
-  }, 
+    
+  },
 };
 </script>
 
