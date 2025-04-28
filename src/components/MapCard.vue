@@ -25,10 +25,18 @@
                 </thead>
                 <tbody>
                   <tr v-for="region in regionItems" :key="region.id">
-                  <td>{{ region.name }}</td>
-                  <td>{{ region.fertility['2024'] }}</td>
-                  <td>{{ region.mortality['2024'] }}</td>
-                  </tr>
+            <td>{{ region.name }}</td>
+            <td>
+              <div class="progress-bar fertility-bar" :style="{ width: (parseFloat(region.fertility['2024']) / 15 * 100) + '%' }">
+                {{ region.fertility['2024'] }}
+              </div>
+            </td>
+            <td>
+              <div class="progress-bar mortality-bar" :style="{ width: (parseFloat(region.mortality['2024']) / 15 * 100) + '%' }">
+                {{ region.mortality['2024'] }}
+              </div>
+            </td>
+          </tr>
                 </tbody>
               </table>
             </div>
@@ -36,6 +44,40 @@
   </div>
   <div class="chart-card chart-card-third">
     <div class="card-header">Смертность и рождаемость, чел. на 1 тыс. чел.</div>
+    <div class="card-content">
+      <div class="stats-container" v-if="selectedRegion">
+        <div class="stats-row">
+          <div class="stats-year">2023 г.</div>
+          <div class="stats-year">2024 г.</div>
+        </div>
+        <div class="stats-row">
+          <div class="stats-item">
+            <span class="stats-label">Рождаемость</span>
+            <span class="stats-value fertility">{{ selectedRegion.fertility['2023'] }}</span>
+          </div>
+          <div class="stats-icon">
+            <i class="fas fa-baby-carriage"></i>
+          </div>
+          <div class="stats-item">
+            <span class="stats-label">Рождаемость</span>
+            <span class="stats-value fertility">{{ selectedRegion.fertility['2024'] }}</span>
+          </div>
+        </div>
+        <div class="stats-row">
+          <div class="stats-item">
+            <span class="stats-label">Смертность</span>
+            <span class="stats-value mortality">{{ selectedRegion.mortality['2023'] }}</span>
+          </div>
+          <div class="stats-icon">
+            <i class="fas fa-cross"></i>
+          </div>
+          <div class="stats-item">
+            <span class="stats-label">Смертность</span>
+            <span class="stats-value mortality">{{ selectedRegion.mortality['2024'] }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
     </div>
     <div class="chart-card chart-card-four">
       <div class="card-header">Смертность, чел. на 1 тыс. чел.</div>
@@ -175,7 +217,7 @@ export default {
                   mortality: { 2023: '10.14', 2024: '11.22' },
                 },
             ],
-            roadChart: {
+roadChart: {
         height: 240,
         dataSource: {
           series: [
@@ -221,6 +263,14 @@ customizePathTexts() {
         texts[regionId] = region.percentage || '';
       });
       return texts;
+    },
+  },
+  computed: {
+    sortedRegions() {
+      return [...this.regionItems].sort((a, b) => a.name.localeCompare(b.name));
+    },
+    selectedRegion() {
+      return this.sortedRegions.length ? this.sortedRegions[0] : null;
     },
   }, 
 };

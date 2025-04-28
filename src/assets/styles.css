@@ -170,7 +170,7 @@
   .table-container {
     flex-grow: 1;
     overflow-y: auto; 
-    max-height: calc(85vh / 2 - 35px);
+    max-height: calc(85vh / 2 - 38px);
     scrollbar-color: #555 #2c2e2e;
     scrollbar-width: thin;
   }
@@ -180,7 +180,7 @@
   }
   .region-table td {
     border-radius: 5px;
-    padding: 6px;
+    padding: 3px;
   }
   
   .region-table th {
@@ -206,4 +206,81 @@
     background-color: #4c4e4e; 
     color: #ffffff;
     
+  }
+  .progress-bar {
+    display: inline-block;
+    height: 19px;
+    line-height: 19px; /* Выравниваем текст по центру по вертикали */
+    border-radius: 4px;
+    padding: 0 8px;
+    color: #fff;
+    font-size: 11px;
+    min-width: 40px; /* Минимальная ширина для читаемости текста */
+    box-sizing: border-box;
+  }
+  .fertility-bar {
+    background-color: #4CAF50; /* Зеленый цвет для рождаемости, как на скриншоте */
+  }
+  .mortality-bar {
+    background-color: #78909C; /* Серый цвет для смертности, как на скриншоте */
+  }
+
+  .stats-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .stats-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin: 0 40px;
+  }
+  
+  .stats-year {
+    font-size: 16px;
+    width: 100px;
+    text-align: center;
+    color: #fff;
+
+  }
+  
+  .stats-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+  }
+  
+  .stats-label {
+    font-size: 14px;
+    color: #fff;
+  }
+  
+  .stats-value {
+    font-size: 30px;
+  }
+  
+  .stats-value.fertility {
+    color: #4CAF50; /* Зеленый цвет для рождаемости */
+  }
+  
+  .stats-value.mortality {
+    color: #78909C; /* Серый цвет для смертности */
+  }
+  
+  .stats-icon {
+    font-size: 75px;
+    width: 40px;
+    text-align: center;
+  }
+  
+  .stats-icon i.fa-baby-carriage {
+    color: #4CAF50; /* Зеленая коляска */
+  }
+  
+  .stats-icon i.fa-cross {
+    color: #78909C; /* Серое надгробие */
   }
