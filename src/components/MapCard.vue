@@ -7,7 +7,7 @@
        :region-items="regionItems"
        :path-data-customization-method="customizePathColors"
        :text-data-customization-method="customizePathTexts"
-       :zoom-on-select="false"
+       :zoom-on-select="false" 
        :selected-region-id="selectedRegionId"
        @region-selected="handleRegionSelect"
        />     
@@ -92,7 +92,7 @@
           <div class="stats-icon">
             <i class="fas fa-cross"></i>
           </div>
-          <div class="stats-item">
+          <div class="stats-item"> 
             <span class="stats-label">Смертность</span>
             <span class="stats-value mortality">
               <count-up
@@ -392,7 +392,7 @@ customizePathColors() {
         if (region.percentage) {
           const percentage = parseFloat(region.percentage) || 0;
           if (percentage >= 75) {
-            styles[regionId] = 'rgb(104, 159, 56)'; 
+            styles[regionId] = 'rgb(104, 159, 56)';
           } else if (percentage >= 25) {
             styles[regionId] = 'rgb(51, 105, 30)'; 
           } else {
