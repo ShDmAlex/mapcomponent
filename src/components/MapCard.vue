@@ -427,5 +427,3 @@ customizePathTexts() {
   },
 };
 </script>
-
-

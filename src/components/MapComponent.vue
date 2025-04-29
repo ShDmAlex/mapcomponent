@@ -321,10 +321,10 @@ showTooltip(text, event) {
   const fert2023 = parseFloat(fertility2023);
   const fert2024 = parseFloat(fertility2024);
   if (fert2024 < fert2023) {
-    fertilityTrend = '▼';
+    fertilityTrend = '<i class="fas fa-caret-down"></i>';
     fertilityIconClass = 'fertility-icon';
   } else {
-    fertilityTrend = '▲';
+    fertilityTrend = '<i class="fas fa-caret-up"></i>';
     fertilityIconClass = 'mortality-icon';
   }
   let mortalityTrend = '';
@@ -332,10 +332,10 @@ showTooltip(text, event) {
   const mortal2023 = parseFloat(mortality2023);
   const mortal2024 = parseFloat(mortality2024);
   if (mortal2024 < mortal2023) {
-    mortalityTrend = '▼';
+    mortalityTrend = '<i class="fas fa-caret-down"></i>';
     mortalityIconClass = 'mortality-icon';
   } else {
-    mortalityTrend = '▲';
+    mortalityTrend = '<i class="fas fa-caret-up"></i>';
     mortalityIconClass = 'fertility-icon';
   }
   this.tooltipHtml = `
