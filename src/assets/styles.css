@@ -91,10 +91,11 @@
     font-size: 11px;
     transition: opacity 0.3s;
     opacity: 0.8;
-    transform: translate(10px, 10px);
+    transform: translate(5px, 5px);
     cursor: pointer;
     width: 220px;
     height: 140px;
+    pointer-events: none
   }
   .tooltip.tooltip-small {
     width: 90px;

@@ -59,27 +59,47 @@
         <div class="stats-row">
           <div class="stats-item">
             <span class="stats-label">Рождаемость</span>
-            <span class="stats-value fertility">{{ selectedRegion.fertility['2023'] }}</span>
+            <span class="stats-value fertility">
+              <count-up
+                :endVal="selectedRegion.fertility['2023']"
+                :options="countUpOptions"
+              ></count-up>
+              </span>
           </div>
           <div class="stats-icon">
             <i class="fas fa-baby-carriage"></i>
           </div>
           <div class="stats-item">
             <span class="stats-label">Рождаемость</span>
-            <span class="stats-value fertility">{{ selectedRegion.fertility['2024'] }}</span>
+            <span class="stats-value fertility">
+              <count-up
+                :endVal="selectedRegion.fertility['2024']"
+                :options="countUpOptions"
+              ></count-up>
+            </span>
           </div>
         </div>
         <div class="stats-row">
           <div class="stats-item">
             <span class="stats-label">Смертность</span>
-            <span class="stats-value mortality">{{ selectedRegion.mortality['2023'] }}</span>
+            <span class="stats-value mortality">
+              <count-up
+                :endVal="selectedRegion.mortality['2023']"
+                :options="countUpOptions"
+              ></count-up>
+            </span>
           </div>
           <div class="stats-icon">
             <i class="fas fa-cross"></i>
           </div>
           <div class="stats-item">
             <span class="stats-label">Смертность</span>
-            <span class="stats-value mortality">{{ selectedRegion.mortality['2024'] }}</span>
+            <span class="stats-value mortality">
+              <count-up
+                :endVal="selectedRegion.mortality['2024']"
+                :options="countUpOptions"
+              ></count-up>
+            </span>
           </div>
         </div>
       </div>
@@ -100,15 +120,22 @@
 
 import MapComponent from './MapComponent.vue';
 import RoadChart from './RoadChart.vue';
+import CountUp from 'vue-countup-v2';
 
 export default {
   name: 'MapCard',
   components: { 
     MapComponent,
     RoadChart,
+    CountUp
    },
   data() {
     return {
+      countUpOptions: {
+      decimalPlaces: 2, 
+      separator: ' ', 
+      duration: 2 
+    },
       selectedRegionId: null,
           regionItems: [
                 {
@@ -255,9 +282,9 @@ export default {
                 },
                 },
                 {
-                  id: 0,
+                  id: 13,
                   name: "Уалихановский район",
-                  svgClass: "fil0",
+                  svgClass: "fil13",
                   percentage: '35.3%',
                   fertility: { 2023: '16.09', 2024: '14.61' },
                   mortality: { 2023: '8.2', 2024: '7.41' },
@@ -294,9 +321,9 @@ export default {
                 },
                 },
                 {
-                  id: 13,
+                  id: 14,
                   name: "СКО",
-                  svgClass: "fil13",
+                  svgClass: "fil14",
                   percentage: '',
                   fertility: { 2023: '10.47', 2024: '9.81' },
                   mortality: { 2023: '11.08', 2024: '11.52' },
@@ -408,7 +435,7 @@ customizePathTexts() {
       if (this.selectedRegionId) {
         return this.regionItems.find(region => region.id === this.selectedRegionId) || null;
       }
-      return this.regionItems.find(region => String(region.id) === '13') || null;
+      return this.regionItems.find(region => String(region.id) === '14') || null;
     },
     
   },

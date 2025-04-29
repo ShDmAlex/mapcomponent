@@ -11,7 +11,7 @@
        v-if="tooltipVisible"
       class="tooltip"
       :class="{ 'tooltip-small': tooltipType === 'reset' }"
-      :style="{ left: tooltipX + 'px', top: tooltipY + 'px' }"
+      :style="{ left: tooltipX, top: tooltipY }"
       v-html="tooltipHtml"
   ></div>
     <button 
