@@ -1,4 +1,4 @@
-# kandas
+# mapcomponent
 
 ## Project setup
 ```
