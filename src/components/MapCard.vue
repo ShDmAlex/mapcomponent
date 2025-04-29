@@ -361,20 +361,6 @@ methods: {
       this.selectedRegionId = regionId; 
     },
     updateRoadChartData() {
-      const defaultData = {
-        series: [
-          { name: '2023', data: [0, 0, 0] },
-          { name: '2024', data: [0, 0, 0] },
-        ],
-        categories: ['Материнская', 'Детская до 5 лет', 'Младенческая до года'],
-        colors: ['#f3a100', '#a0c913'],
-      };
-
-      if (!this.selectedRegion || !this.selectedRegion.chartData) {
-        this.roadChart.dataSource = defaultData;
-        return;
-      }
-
       const { maternal, child, infant } = this.selectedRegion.chartData;
       this.roadChart.dataSource = {
         series: [
