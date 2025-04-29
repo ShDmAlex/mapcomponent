@@ -309,7 +309,6 @@ showTooltip(text, event) {
     this.tooltipY = event.clientY;
     return;
   }
-
   this.tooltipType = 'region';
   const region = text;
   const regionName = region.name;
@@ -317,7 +316,6 @@ showTooltip(text, event) {
   const fertility2024 = region.fertility['2024'];
   const mortality2023 = region.mortality['2023'];
   const mortality2024 = region.mortality['2024'];
-
   let fertilityTrend = '';
   let fertilityIconClass = '';
   const fert2023 = parseFloat(fertility2023);
@@ -329,7 +327,6 @@ showTooltip(text, event) {
     fertilityTrend = '▲';
     fertilityIconClass = 'mortality-icon';
   }
-
   let mortalityTrend = '';
   let mortalityIconClass = '';
   const mortal2023 = parseFloat(mortality2023);
@@ -341,7 +338,6 @@ showTooltip(text, event) {
     mortalityTrend = '▲';
     mortalityIconClass = 'fertility-icon';
   }
-
   this.tooltipHtml = `
     <div class="tooltip-content">
       <div class="tooltip-title">${regionName}</div>
@@ -363,7 +359,6 @@ showTooltip(text, event) {
       </div>
     </div>
   `;
-
   this.tooltipVisible = true;
   this.tooltipX = event.clientX;
   this.tooltipY = event.clientY;

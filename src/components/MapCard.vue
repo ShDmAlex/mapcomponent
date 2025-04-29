@@ -348,17 +348,17 @@ export default {
     }
 },
 mounted() {
-    this.updateRoadChartData(); // Инициализируем данные диаграммы при монтировании
+    this.updateRoadChartData(); 
   },
   watch: {
     selectedRegionId() {
-      this.updateRoadChartData(); // Обновляем данные диаграммы при изменении региона
+      this.updateRoadChartData(); 
     },
   },
 methods: {
   handleRegionSelect(regionId) {
     console.log('Region selected with ID:', regionId);
-      this.selectedRegionId = regionId; // Обновляем selectedRegionId при выборе региона
+      this.selectedRegionId = regionId; 
     },
     updateRoadChartData() {
       const defaultData = {
