@@ -29,19 +29,17 @@
           <tr v-for="region in regionItems" :key="region.id">
             <td>{{ region.name }}</td>
             <td>
-              <div class="progress-bar-container">
-                <div class="progress-bar fertility-bar" :style="{ width: (parseFloat(region.fertility['2024']) / 15 * 100) + '%' }">
-                  {{ region.fertility['2024'] }}
-                </div>
-              </div>
+        <div class="progress-bar-container">
+          <div class="progress-fill fertility-bar" :style="{ width: (parseFloat(region.fertility['2024']) / 15 * 100) + '%' }"></div>
+            <div class="progress-label">{{ region.fertility['2024'] }}</div>
+          </div>
             </td>
-            <td>
-              <div class="progress-bar-container">
-                <div class="progress-bar mortality-bar" :style="{ width: (parseFloat(region.mortality['2024']) / 15 * 100) + '%' }">
-                  {{ region.mortality['2024'] }}
-                </div>
-              </div>
-            </td>
+          <td>
+            <div class="progress-bar-container">
+            <div class="progress-fill mortality-bar" :style="{ width: (parseFloat(region.mortality['2024']) / 15 * 100) + '%' }"></div>
+            <div class="progress-label">{{ region.mortality['2024'] }}</div>
+          </div>
+          </td>
           </tr>
         </tbody>
       </table>
@@ -335,7 +333,7 @@ export default {
                 },
             ],
             roadChart: {
-        height: 260,
+        height: 250,
         dataSource: {
           series: [
             { name: '2023', data: [0, 0, 0] },
