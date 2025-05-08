@@ -7,6 +7,7 @@
     padding-right: 10px;
     justify-content: flex-start;
     flex-wrap: wrap;
+    
   }
   .chart-card {
     position: relative;
@@ -53,7 +54,8 @@
   }
   .card-content {
     padding: 10px;
-    flex-grow: 1;
+    flex: 1;
+    
   }
   .svg-map .str0 {
     stroke: #252429;
@@ -192,7 +194,7 @@
   }
   .region-table td {
     border-radius: 5px;
-    padding: 3px;
+    padding: 2px;
   }
   
   .region-table th {
@@ -222,7 +224,7 @@
   .progress-bar-container {
     position: relative;
     width: 100px;
-    height: 19px;
+    height: 22px;
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -241,7 +243,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    height: 100%;
+    height: 80%;
     line-height: 19px;
     padding: 0 8px;
     color: #fff;
@@ -259,22 +261,107 @@
     background-color: #78909C;
   }
   
-  .progress-label {
-    position: absolute;
-    top: 0;
-    left: 0;
+  .custom-table {
     width: 100%;
-    height: 19px;
-    text-align: center;
-    line-height: 19px;
-    color: #fff;
-    pointer-events: none;
+    background-color: transparent !important;
   }
   
+  .custom-table .v-data-table-header {
+    background-color: #43474b; 
+    
+  }
+  
+  .custom-table .v-data-table__wrapper tbody tr {
+    background-color: #2e2c2c; 
+    color: #ffffff;
+  }
+  .custom-table .v-data-table__wrapper tbody tr:hover {
+    background-color: #373a3b !important; 
+  }
+  
+  .custom-table .v-data-table-header th {
+    height: 25px !important; 
+    line-height: 25px !important; 
+    font-size: 11px !important; 
+    color: #ffffff !important; 
+    border-radius: 3px;
+    border-right: 1px solid #2e2c2c;
+    text-align: left;
+  }
+  
+  .custom-table .v-data-table-header th:first-child {
+    width: 55% !important; 
+  }
+  .custom-table .v-data-table-header th:nth-child(2),
+  .custom-table .v-data-table-header th:nth-child(3) {
+    width: 22% !important; 
+  }
+  
+  .custom-table .v-data-table__wrapper tbody tr {
+    height: 25px !important; 
+    border-bottom: none !important;
+  }
+
+  .custom-table .v-data-table__wrapper tbody td {
+    height: 25px !important; 
+    vertical-align: middle; 
+    font-size: 11px !important;
+    border-right: 1px solid #2e2c2c;
+    border-bottom: none !important;
+    border-radius: 3px;
+  }
+  .custom-table .v-data-table__wrapper {
+    overflow: visible !important; 
+  }
+  
+  .progress-label {
+    position: absolute;
+    text-align: center;
+    margin-top: 1px;
+    
+    font-size: 11px;
+    color: #fff;
+  }
+  .progress-container {
+    position: relative;
+    height: 18px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .table-scroll-container {
+    max-height: calc(70vh - 200px); 
+    overflow-y: auto; 
+    border-radius: 2px; 
+    overflow-x: hidden; 
+    position: relative;
+    
+  }
+  .table-scroll-container {
+    scrollbar-width: thin; 
+    scrollbar-color: #555 #2e2c2c; 
+  }
+  .table-scroll-container::-webkit-scrollbar {
+    width: 8px; 
+  }
+  .table-scroll-container::-webkit-scrollbar-track {
+    background: #2e2c2c; 
+  }
+  .table-scroll-container::-webkit-scrollbar-thumb {
+    background-color: #555; 
+    border-radius: 4px; 
+  }
+  .custom-table .v-data-table-header {
+    position: sticky !important;
+    top: 0;
+    z-index: 1;
+  }
   .stats-container {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    
   }
   
   .stats-row {
@@ -283,6 +370,7 @@
     align-items: center;
     gap: 10px;
     margin: 0 40px;
+    
   }
   
   .stats-year {
@@ -298,6 +386,7 @@
     flex-direction: column;
     align-items: center;
     width: 100px;
+    
   }
   
   .stats-label {

@@ -10,8 +10,8 @@
     <div
        v-if="tooltipVisible"
       class="tooltip"
-      :class="{ 'tooltip-small': tooltipType === 'reset' }"
-      :style="{ left: tooltipX, top: tooltipY }"
+      :class="{ 'tooltip-small': tooltipType === 'reset', 'tooltip-centered': tooltipCentered }"
+      :style="{ left: tooltipX + 'px', top: tooltipY + 'px' }"
       v-html="tooltipHtml"
   ></div>
     <button 
@@ -49,16 +49,24 @@ export default {
     type: Boolean,
     default: true, 
   },
+  tooltipHtmlExternal: {
+    type: String,
+    default: '',
   },
-  data() {
+  tooltipEvent: {
+    type: Object,
+    default: null,
+  },
+  },
+  data: function() {
     return {
       selectedRegion: null,
       tooltipVisible: false,
-      tooltipType: 'region',
-      tooltipText: '',
       tooltipHtml: '',
+      tooltipType: 'region',
       tooltipX: 0,
       tooltipY: 0,
+      tooltipCentered: false,
       defaultViewBox: '0 0 29252.3 16557.2',
       currentViewBox: '0 0 29252.3 16557.2',
       zoomLevel: 1,
@@ -194,7 +202,6 @@ selectRegion(regionId) {
     return String(r.id) === regionId;
   });
   const regionDataId = region ? region.id : null;
-  console.log(`regionId: ${regionId}, regionDataId: ${regionDataId}`);
   this.$emit('region-selected', regionDataId);
 },
 resetToDefault() {
@@ -300,77 +307,81 @@ updateSvgClasses() {
     }
   });
 },
-showTooltip(text, event) {
-  if (typeof text === 'string') {
-    this.tooltipType = 'reset';
-    this.tooltipHtml = `<div class="tooltip-content">${text}</div>`;
-    this.tooltipVisible = true;
-    this.tooltipX = event.clientX;
-    this.tooltipY = event.clientY;
-    return;
-  }
-  this.tooltipType = 'region';
-  const region = text;
-  const regionName = region.name;
-  const fertility2023 = region.fertility['2023'];
-  const fertility2024 = region.fertility['2024'];
-  const mortality2023 = region.mortality['2023'];
-  const mortality2024 = region.mortality['2024'];
-  let fertilityTrend = '';
-  let fertilityIconClass = '';
-  const fert2023 = parseFloat(fertility2023);
-  const fert2024 = parseFloat(fertility2024);
-  if (fert2024 < fert2023) {
-    fertilityTrend = '<i class="fas fa-caret-down"></i>';
-    fertilityIconClass = 'fertility-icon';
-  } else {
-    fertilityTrend = '<i class="fas fa-caret-up"></i>';
-    fertilityIconClass = 'mortality-icon';
-  }
-  let mortalityTrend = '';
-  let mortalityIconClass = '';
-  const mortal2023 = parseFloat(mortality2023);
-  const mortal2024 = parseFloat(mortality2024);
-  if (mortal2024 < mortal2023) {
-    mortalityTrend = '<i class="fas fa-caret-down"></i>';
-    mortalityIconClass = 'mortality-icon';
-  } else {
-    mortalityTrend = '<i class="fas fa-caret-up"></i>';
-    mortalityIconClass = 'fertility-icon';
-  }
-  this.tooltipHtml = `
-    <div class="tooltip-content">
-      <div class="tooltip-title">${regionName}</div>
-      <div class="tooltip-section">
-        <span class="tooltip-label">Рождаемость</span><br>
-        <span class="tooltip-year">2023г. - ${fertility2023}</span>
-        <div class="tooltip-year-with-icon">
-          <span class="tooltip-year">2024г. - ${fertility2024}</span>
-          <span class="tooltip-icon ${fertilityIconClass}">${fertilityTrend}</span>
-        </div>
-      </div>
-      <div class="tooltip-section">
-        <span class="tooltip-label">Смертность</span><br>
-        <span class="tooltip-year">2023г. - ${mortality2023}</span>
-        <div class="tooltip-year-with-icon">
-          <span class="tooltip-year">2024г. - ${mortality2024}</span>
-          <span class="tooltip-icon ${mortalityIconClass}">${mortalityTrend}</span>
-        </div>
-      </div>
-    </div>
-  `;
-  this.tooltipVisible = true;
-  this.tooltipX = event.clientX;
-  this.tooltipY = event.clientY;
-},
-hideTooltip() {
+showTooltip: function(text, event) {
+      // Проверяем, что text - это строка или объект региона
+      if (typeof text !== 'string' && !text) {
+        console.error('Invalid tooltip data:', text);
+        this.hideTooltip();
+        return;
+      }
+
+      // Если text - это строка (например, "Вся область"), используем её напрямую
+      const isResetTooltip = typeof text === 'string' && text.includes('Вернуть');
+      this.tooltipType = isResetTooltip ? 'reset' : 'region';
+
+      // Если text - это объект региона, передаем его в родительский компонент через событие
+      if (typeof text !== 'string') {
+        this.$emit('tooltip-show', { region: text, event });
+        return;
+      }
+
+      const tooltipWidth = this.tooltipType === 'reset' ? 90 : 220;
+      const tooltipHeight = this.tooltipType === 'reset' ? 40 : 140;
+      const offsetX = 10;
+      const offsetY = 10;
+
+      const mouseX = event.clientX;
+      const mouseY = event.clientY;
+      const windowHeight = window.innerHeight;
+
+      let tooltipX;
+      this.tooltipCentered = mouseX < tooltipWidth + offsetX;
+      if (this.tooltipCentered) {
+        tooltipX = mouseX - tooltipWidth / 2;
+      } else {
+        tooltipX = mouseX - tooltipWidth - offsetX;
+      }
+      tooltipX = Math.max(0, tooltipX);
+
+      let tooltipY = mouseY + offsetY;
+      if (tooltipY + tooltipHeight > windowHeight) {
+        tooltipY = mouseY - tooltipHeight - offsetY;
+      }
+      tooltipY = Math.max(0, tooltipY);
+
+      this.tooltipX = tooltipX;
+      this.tooltipY = tooltipY;
+
+      this.tooltipHtml = text;
+      this.tooltipVisible = true;
+    },
+    hideTooltip: function() {
       this.tooltipVisible = false;
       this.tooltipType = 'region';
+      this.tooltipHtml = '';
+    },
+    handleMouseOver: function(region, event) {
+      this.$emit('tooltip-show', { region, event });
+    },
+    handleMouseMove: function(event) {
+      if (this.tooltipHtml) {
+        this.showTooltip(this.tooltipHtml, event);
+      }
     },
   },
   watch: {
 selectedRegion() {
       this.updateSvgClasses();
+    },
+    tooltipHtmlExternal: function(newHtml) {
+      if (newHtml && this.tooltipEvent) {
+        this.showTooltip(newHtml, this.tooltipEvent);
+      }
+    },
+    tooltipEvent: function(newEvent) {
+      if (newEvent && this.tooltipHtmlExternal) {
+        this.showTooltip(this.tooltipHtmlExternal, newEvent);
+      }
     },
     regionItems: {
       handler() {

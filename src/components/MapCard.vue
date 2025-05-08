@@ -9,42 +9,54 @@
        :text-data-customization-method="customizePathTexts"
        :zoom-on-select="false" 
        :selected-region-id="selectedRegionId"
+       :tooltip-html-external="tooltipHtml"
+       :tooltip-event="tooltipEvent"
        @region-selected="handleRegionSelect"
+       @tooltip-show="handleTooltipShow"
        />     
     </div>
   </div>
   <div class="chart-card chart-card-second">
-  <div class="card-header">Общий уровень смертности и рождаемости, чел. на 1 тыс. чел.</div>
-  <div class="card-content">
-    <div class="table-container">
-      <table class="region-table">
-        <thead>
-          <tr>
-            <th>Регион</th>
-            <th>Рождаемость</th>
-            <th>Смертность</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="region in regionItems" :key="region.id">
-            <td>{{ region.name }}</td>
-            <td>
-        <div class="progress-bar-container">
-          <div class="progress-fill fertility-bar" :style="{ width: (parseFloat(region.fertility['2024']) / 15 * 100) + '%' }"></div>
-            <div class="progress-label">{{ region.fertility['2024'] }}</div>
-          </div>
-            </td>
-          <td>
-            <div class="progress-bar-container">
-            <div class="progress-fill mortality-bar" :style="{ width: (parseFloat(region.mortality['2024']) / 15 * 100) + '%' }"></div>
-            <div class="progress-label">{{ region.mortality['2024'] }}</div>
-          </div>
-          </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <div class="card-header">Общий уровень смертности и рождаемости, чел. на 1 тыс. чел.</div>
+      <div class="card-content">
+        <div class="table-scroll-container">
+        <v-data-table
+          :headers="headers"
+          :items="regionItems"
+          class="custom-table elevation-1"
+          disable-pagination
+          disable-sort
+          hide-default-footer
+          
+        >
+          <template slot="item.fertility" slot-scope="{ item }">
+            <div class="progress-container">
+              <v-progress-linear
+                :value="getFertilityPercent(item)"
+                height="18"
+                color="rgb(76, 175, 80)"
+                
+                rounded
+              />
+              <div class="progress-label">{{ item.fertility['2024'] }}</div>
+            </div>
+          </template>
+
+          <template slot="item.mortality" slot-scope="{ item }">
+            <div class="progress-container">
+              <v-progress-linear
+                :value="getMortalityPercent(item)"
+                height="18"
+                color="rgb(120, 144, 156)"
+                
+                rounded
+              />
+              <div class="progress-label">{{ item.mortality['2024'] }}</div>
+            </div>
+          </template>
+        </v-data-table>
   </div>
+</div>
 </div>
   <div class="chart-card chart-card-third">
     <div class="card-header">Смертность и рождаемость, чел. на 1 тыс. чел.</div>
@@ -60,7 +72,7 @@
             <span class="stats-value fertility">
               <count-up
                 :endVal="selectedRegion.fertility['2023']"
-                :options="countUpOptions"
+                :options="getCountUpOptions(selectedRegion.fertility['2023'])"
               ></count-up>
               </span>
           </div>
@@ -72,7 +84,7 @@
             <span class="stats-value fertility">
               <count-up
                 :endVal="selectedRegion.fertility['2024']"
-                :options="countUpOptions"
+                :options="getCountUpOptions(selectedRegion.fertility['2024'])"
               ></count-up>
             </span>
           </div>
@@ -83,7 +95,7 @@
             <span class="stats-value mortality">
               <count-up
                 :endVal="selectedRegion.mortality['2023']"
-                :options="countUpOptions"
+                :options="getCountUpOptions(selectedRegion.mortality['2023'])"
               ></count-up>
             </span>
           </div>
@@ -95,7 +107,7 @@
             <span class="stats-value mortality">
               <count-up
                 :endVal="selectedRegion.mortality['2024']"
-                :options="countUpOptions"
+                :options="getCountUpOptions(selectedRegion.mortality['2024'])"
               ></count-up>
             </span>
           </div>
@@ -129,12 +141,14 @@ export default {
    },
   data() {
     return {
-      countUpOptions: {
-      decimalPlaces: 2, 
-      separator: ' ', 
-      duration: 2 
-    },
       selectedRegionId: null,
+      tooltipHtml: '',
+      tooltipEvent: null,
+      headers: [
+        { text: 'Регион', value: 'name' },
+        { text: 'Рождаемость', value: 'fertility' },
+        { text: 'Смертность', value: 'mortality' }
+      ],
           regionItems: [
                 {
                   id: 4,
@@ -355,8 +369,69 @@ mounted() {
   },
 methods: {
   handleRegionSelect(regionId) {
-    console.log('Region selected with ID:', regionId);
       this.selectedRegionId = regionId; 
+    },
+    handleTooltipShow({ region, event }) {
+      if (region === 'reset') {
+        this.tooltipHtml = `<div class="tooltip-content">Вернуть масштаб</div>`;
+        this.tooltipEvent = event;
+        return;
+      }
+
+      const regionName = region.name;
+      const fertility2023 = region.fertility['2023'];
+      const fertility2024 = region.fertility['2024'];
+      const mortality2023 = region.mortality['2023'];
+      const mortality2024 = region.mortality['2024'];
+
+      let fertilityTrend = '';
+      let fertilityIconClass = '';
+      const fert2023 = parseFloat(fertility2023);
+      const fert2024 = parseFloat(fertility2024);
+      if (fert2024 < fert2023) {
+        fertilityTrend = '<i class="fas fa-caret-down"></i>';
+        fertilityIconClass = 'fertility-icon';
+      } else {
+        fertilityTrend = '<i class="fas fa-caret-up"></i>';
+        fertilityIconClass = 'mortality-icon';
+      }
+
+      let mortalityTrend = '';
+      let mortalityIconClass = '';
+      const mortal2023 = parseFloat(mortality2023);
+      const mortal2024 = parseFloat(mortality2024);
+      if (mortal2024 < mortal2023) {
+        mortalityTrend = '<i class="fas fa-caret-down"></i>';
+        mortalityIconClass = 'mortality-icon';
+      } else {
+        mortalityTrend = '<i class="fas fa-caret-up"></i>';
+        mortalityIconClass = 'fertility-icon';
+      }
+
+      const html = `
+        <div class="tooltip-content">
+          <div class="tooltip-title">${regionName}</div>
+          <div class="tooltip-section">
+            <span class="tooltip-label">Рождаемость</span><br>
+            <span class="tooltip-year">2023г. - ${fertility2023}</span>
+            <div class="tooltip-year-with-icon">
+              <span class="tooltip-year">2024г. - ${fertility2024}</span>
+              <span class="tooltip-icon ${fertilityIconClass}">${fertilityTrend}</span>
+            </div>
+          </div>
+          <div class="tooltip-section">
+            <span class="tooltip-label">Смертность</span><br>
+            <span class="tooltip-year">2023г. - ${mortality2023}</span>
+            <div class="tooltip-year-with-icon">
+              <span class="tooltip-year">2024г. - ${mortality2024}</span>
+              <span class="tooltip-icon ${mortalityIconClass}">${mortalityTrend}</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      this.tooltipHtml = String(html);
+      this.tooltipEvent = event;
     },
     updateRoadChartData() {
       const { maternal, child, infant } = this.selectedRegion.chartData;
@@ -410,17 +485,34 @@ customizePathTexts() {
       });
       return texts;
     },
+    getFertilityPercent(item) {
+      return (parseFloat(item.fertility['2024']) / 15) * 100;
+    },
+    getMortalityPercent(item) {
+      return (parseFloat(item.mortality['2024']) / 15) * 100;
+    },
+    getCountUpOptions(value) {
+      const numStr = value.toString();
+      const decimalIndex = numStr.indexOf('.');
+      let decimalPlaces = 0;
+
+      if (decimalIndex !== -1) {
+        decimalPlaces = numStr.length - decimalIndex - 1;
+      }
+
+      return {
+        ...this.countUpOptions,
+        decimalPlaces: decimalPlaces > 0 ? decimalPlaces : 0,
+      };
+    },
   },
   computed: {
     sortedRegions() {
       return [...this.regionItems].sort((a, b) => a.name.localeCompare(b.name));
     },
     selectedRegion() {
-      if (this.selectedRegionId) {
-        return this.regionItems.find(region => region.id === this.selectedRegionId) || null;
-      }
-      return this.regionItems.find(region => String(region.id) === '14') || null;
-    },
+    return this.regionItems.find(region => String(region.id) === String(this.selectedRegionId || '14')) || null;
+  },
     
   },
 };
