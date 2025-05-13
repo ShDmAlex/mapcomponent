@@ -1,7 +1,7 @@
 .grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
+    grid-template-rows: 1fr 1fr;
     gap: 10px;
     font-family: 'Montserrat-Regular';
     padding-right: 10px;
@@ -18,7 +18,8 @@
     display: flex;
     flex-direction: column;
     width: 100%; 
-    height: calc(100vh / 2 - 32px); 
+    height: 100%;
+     
   }
   .chart-card-first {
     grid-column: 1;
@@ -43,6 +44,8 @@
     grid-row: 2;
     width: 100%;
     height: calc(100vh / 2 - 32px); 
+    display: flex;
+    flex-direction: column;
   }
   .card-header {
     font-size: 15px;
@@ -55,7 +58,9 @@
   .card-content {
     padding: 10px;
     flex: 1;
-    
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
   .svg-map .str0 {
     stroke: #252429;
@@ -264,6 +269,7 @@
   .custom-table {
     width: 100%;
     background-color: transparent !important;
+    table-layout: fixed;
   }
   
   .custom-table .v-data-table-header {
@@ -272,7 +278,7 @@
   }
   
   .custom-table .v-data-table__wrapper tbody tr {
-    background-color: #2e2c2c; 
+    background-color: #2e2c2c;   
     color: #ffffff;
   }
   .custom-table .v-data-table__wrapper tbody tr:hover {
@@ -287,6 +293,7 @@
     border-radius: 3px;
     border-right: 1px solid #2e2c2c;
     text-align: left;
+    padding-left: 5px !important;
   }
   
   .custom-table .v-data-table-header th:first-child {
@@ -303,12 +310,13 @@
   }
 
   .custom-table .v-data-table__wrapper tbody td {
-    height: 25px !important; 
+    height: 28px !important; 
     vertical-align: middle; 
     font-size: 11px !important;
     border-right: 1px solid #2e2c2c;
     border-bottom: none !important;
     border-radius: 3px;
+    padding-left: 5px !important;
   }
   .custom-table .v-data-table__wrapper {
     overflow: visible !important; 
@@ -336,7 +344,7 @@
     border-radius: 2px; 
     overflow-x: hidden; 
     position: relative;
-    
+    flex: 1;
   }
   .table-scroll-container {
     scrollbar-width: thin; 
@@ -357,11 +365,20 @@
     top: 0;
     z-index: 1;
   }
+  .road-container{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    min-height: 250px;
+    
+  }
+  
   .stats-container {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    
+    flex: 1;
   }
   
   .stats-row {
@@ -370,7 +387,7 @@
     align-items: center;
     gap: 10px;
     margin: 0 40px;
-    
+    flex: 1;
   }
   
   .stats-year {
@@ -407,16 +424,9 @@
   }
   
   .stats-icon {
-    font-size: 75px;
-    width: 40px;
+    
     text-align: center;
   }
   
-  .stats-icon i.fa-baby-carriage {
-    color: #4CAF50; 
-  }
   
-  .stats-icon i.fa-cross {
-    color: #78909C; 
-  }
   

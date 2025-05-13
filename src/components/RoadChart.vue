@@ -19,7 +19,7 @@
     props: {
     height: {
       type: [Number, String],
-      default: 240,
+      default: 250,
     },
     width: {
       type: [Number, String],
@@ -56,9 +56,11 @@
           toolbar: {
             show: false,
           },
+          
         },
         plotOptions: {
           bar: {
+            
             horizontal: true,
             dataLabels: {
               position: 'center',
