@@ -24,12 +24,12 @@
           <v-data-table
             :headers="headers"
             :items="regionItems"
+            :custom-sort="customSort"
             class="custom-table elevation-1"
             disable-pagination
-            
             hide-default-footer
-            
           >
+
             <template slot="item.fertility" slot-scope="{ item }">
               <div class="progress-container">
                 <v-progress-linear
@@ -519,6 +519,19 @@ export default {
         decimalPlaces: decimalPlaces,
         decimal: '.', 
       };
+    },
+    customSort(items, sortBy, sortDesc) {
+      return items.sort((a, b) => {
+      const key = sortBy[0];
+      const desc = sortDesc[0];
+      let valA = a[key];
+      let valB = b[key];
+      if (typeof valA === 'object' && valA !== null) valA = parseFloat(valA['2024']);
+      if (typeof valB === 'object' && valB !== null) valB = parseFloat(valB['2024']);
+      if (valA < valB) return desc ? 1 : -1;
+      if (valA > valB) return desc ? -1 : 1;
+      return 0;
+      });
     },
   },
   computed: {
