@@ -25,6 +25,7 @@
             :headers="headers"
             :items="regionItems"
             :custom-sort="customSort"
+            height="calc(20vh - 150px)"
             class="custom-table elevation-1"
             disable-pagination
             hide-default-footer
