@@ -354,9 +354,11 @@ export default {
           },
         },
       ],
-      roadChart: { 
+      roadchartConfig: { 
         categories: ['Материнская', 'Детская до 5 лет', 'Младенческая до года'],
         colors: ['#f3a100', '#a0c913'],
+        years: ['2023', '2024'], 
+        dataKeys: ['maternal', 'child', 'infant'], 
       },
     };
   },
@@ -509,40 +511,21 @@ export default {
     return container?.clientHeight || 270;
     },
     roadChartData() {
+      const { categories, colors, years, dataKeys } = this.roadchartConfig;
       const region = this.selectedRegion;
-      if (!region) {
-        return {
-          series: [
-            { name: '2023', data: [0, 0, 0] },
-            { name: '2024', data: [0, 0, 0] },
-          ],
-          categories: this.roadChart.categories,
-          colors: this.roadChart.colors,
-        };
-      }
+      const series = years.map(year => ({
+        name: year,
+        data: dataKeys.map(key => {
+          if (!region) return 0; 
+          const value = region.chartData[key]?.[year];
+          return parseFloat(value) || 0;
+        }),
+      }));
 
-      const { maternal, child, infant } = region.chartData;
       return {
-        series: [
-          {
-            name: '2023',
-            data: [
-              parseFloat(maternal?.['2023']) || 0,
-              parseFloat(child?.['2023']) || 0,
-              parseFloat(infant?.['2023']) || 0,
-            ],
-          },
-          {
-            name: '2024',
-            data: [
-              parseFloat(maternal?.['2024']) || 0,
-              parseFloat(child?.['2024']) || 0,
-              parseFloat(infant?.['2024']) || 0,
-            ],
-          },
-        ],
-        categories: this.roadChart.categories,
-        colors: this.roadChart.colors,
+        categories,
+        colors,
+        series,
       };
     },
   },
