@@ -9,7 +9,7 @@
     />
     <div
        v-if="tooltipVisible"
-      class="tooltip"
+      class="map-tooltip"
       :class="{ 'tooltip-small': tooltipType === 'reset', 'tooltip-centered': tooltipCentered }"
       :style="{ left: tooltipX + 'px', top: tooltipY + 'px' }"
       v-html="tooltipHtml"
@@ -18,8 +18,7 @@
     v-if="selectedRegion !== null" 
     class="reset-btn" 
     @click="resetToDefault" 
-    @mouseenter="showTooltip('Вся область', $event)"
-    @mouseleave="hideTooltip">
+    v-tooltip="{ content: 'Вся область', placement: 'right', popperClass: 'reset-tooltip', }" >
       <i class="fa-solid fa-earth-americas"></i>
     </button>
   </div>

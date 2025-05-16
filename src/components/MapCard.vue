@@ -127,7 +127,7 @@
         <div class="road-container">
           <road-chart
             height="100%"
-            :data-source="roadChart.dataSource"
+            :data-source="roadChartData"
           />
         </div>
       </div>
@@ -354,41 +354,26 @@ export default {
           },
         },
       ],
-      roadChart: {
-        dataSource: {
-          series: [
-            { name: '2023', data: [0, 0, 0] },
-            { name: '2024', data: [0, 0, 0] },
-          ],
-          categories: ['Материнская', 'Детская до 5 лет', 'Младенческая до года'],
-          colors: ['#f3a100', '#a0c913'],
-        },
+      roadchartConfig: { 
+        categories: ['Материнская', 'Детская до 5 лет', 'Младенческая до года'],
+        colors: ['#f3a100', '#a0c913'],
+        years: ['2023', '2024'], 
+        dataKeys: ['maternal', 'child', 'infant'], 
       },
     };
   },
   mounted() {
-    this.updateRoadChartData();
+    
   },
   watch: {
-    selectedRegionId() {
-      this.updateRoadChartData();
-    },
+    
   },
   methods: {
     handleRegionSelect(regionId) {
       this.selectedRegionId = regionId;
     },
     handleTooltipShow({ region, event }) {
-      if (region === 'reset') {
-        this.tooltipHtml = `<div class="tooltip-content">Вся область</div>`;
-        this.tooltipEvent = {
-          position: {
-            x: event.clientX,
-            y: event.clientY,
-          },
-        };
-        return;
-      }
+      
 
       const regionName = region.name;
       const fertility2023 = region.fertility['2023'];
@@ -448,31 +433,6 @@ export default {
           x: event.clientX,
           y: event.clientY,
         },
-      };
-    },
-    updateRoadChartData() {
-      const { maternal, child, infant } = this.selectedRegion.chartData;
-      this.roadChart.dataSource = {
-        series: [
-          {
-            name: '2023',
-            data: [
-              maternal?.[2023] ?? 0,
-              child?.[2023] ?? 0,
-              infant?.[2023] ?? 0,
-            ],
-          },
-          {
-            name: '2024',
-            data: [
-              maternal?.[2024] ?? 0,
-              child?.[2024] ?? 0,
-              infant?.[2024] ?? 0,
-            ],
-          },
-        ],
-        categories: ['Материнская', 'Детская до 5 лет', 'Младенческая до года'],
-        colors: ['#f3a100', '#a0c913'],
       };
     },
     customizePathColors() {
@@ -547,7 +507,25 @@ export default {
     chartHeight() {
     const container = this.$el?.querySelector('.road-container');
     return container?.clientHeight || 270;
-  }
+    },
+    roadChartData() {
+      const { categories, colors, years, dataKeys } = this.roadchartConfig;
+      const region = this.selectedRegion;
+      const series = years.map(year => ({
+        name: year,
+        data: dataKeys.map(key => {
+          if (!region) return 0; 
+          const value = region.chartData[key]?.[year];
+          return parseFloat(value) || 0;
+        }),
+      }));
+
+      return {
+        categories,
+        colors,
+        series,
+      };
+    },
   },
 };
 </script>
