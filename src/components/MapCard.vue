@@ -363,12 +363,10 @@ export default {
     };
   },
   mounted() {
-    this.updateRoadChartData();
+    
   },
   watch: {
-    selectedRegionId() {
-      this.updateRoadChartData();
-    },
+    
   },
   methods: {
     handleRegionSelect(regionId) {
