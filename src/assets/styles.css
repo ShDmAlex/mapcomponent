@@ -192,9 +192,9 @@
     width: 0;
     height: 0;
     border-style: solid;
-    border-width: 5px 5px 5px 0; /* Изменено направление: теперь стрелка вправо */
-    border-color: transparent #333 transparent transparent; /* Цвет стрелки совпадает с фоном тултипа */
-    left: -5px; /* Расположение стрелки слева от тултипа */
+    border-width: 5px 5px 5px 0; 
+    border-color: transparent #333 transparent transparent; 
+    left: -5px; 
     top: 50%;
     transform: translateY(-5%);
   }
@@ -312,12 +312,12 @@
   }
   
   .custom-table .v-data-table-header th .v-data-table-header__icon {
-    color: #666666 !important; /* Серый цвет для неактивных стрелок */
+    color: #666666 !important; 
   }
   
-  /* Цвет для активной стрелки сортировки (когда <th> имеет класс active) */
+  
   .custom-table .v-data-table-header th.active .v-data-table-header__icon {
-    color: #ffffff !important; /* Зелёный цвет для активной стрелки */
+    color: #ffffff !important; 
   }
 
   .custom-table .v-data-table-header {
