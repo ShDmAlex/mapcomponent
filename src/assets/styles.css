@@ -173,6 +173,31 @@
   .reset-btn:hover {
     background-color: #555352;
   }
+  .reset-tooltip {
+    background-color: #333; 
+    color: #fff; 
+    border-radius: 4px;
+    font-size: 12px;
+    position: relative; 
+    width: 80px;
+    height: 25px;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    text-align: center;
+  }
+  
+  .reset-tooltip .tooltip-arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 5px 5px 0; /* Изменено направление: теперь стрелка вправо */
+    border-color: transparent #333 transparent transparent; /* Цвет стрелки совпадает с фоном тултипа */
+    left: -5px; /* Расположение стрелки слева от тултипа */
+    top: 50%;
+    transform: translateY(-5%);
+  }
   .hidden {
       opacity: 0; 
       pointer-events: none;
@@ -286,6 +311,15 @@
     table-layout: fixed;
   }
   
+  .custom-table .v-data-table-header th .v-data-table-header__icon {
+    color: #666666 !important; /* Серый цвет для неактивных стрелок */
+  }
+  
+  /* Цвет для активной стрелки сортировки (когда <th> имеет класс active) */
+  .custom-table .v-data-table-header th.active .v-data-table-header__icon {
+    color: #ffffff !important; /* Зелёный цвет для активной стрелки */
+  }
+
   .custom-table .v-data-table-header {
     background-color: #43474b; 
     

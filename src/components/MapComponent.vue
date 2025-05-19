@@ -18,7 +18,7 @@
     v-if="selectedRegion !== null" 
     class="reset-btn" 
     @click="resetToDefault" 
-    v-tooltip="{ content: 'Вся область', placement: 'right', popperClass: 'reset-tooltip', }" >
+    v-tooltip="{ content: 'Вся область', placement: 'right', classes: 'reset-tooltip', arrow: true, offset: 5 }" >
       <i class="fa-solid fa-earth-americas"></i>
     </button>
   </div>
