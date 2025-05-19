@@ -25,6 +25,8 @@
             :headers="headers"
             :items="regionItems"
             :custom-sort="customSort"
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
             height="calc(20vh - 150px)"
             class="custom-table elevation-1"
             disable-pagination
@@ -149,13 +151,15 @@ export default {
   },
   data() {
     return {
+      sortBy: 'name',
+      sortDesc: false,
       selectedRegionId: null,
       tooltipHtml: '',
       tooltipEvent: null,
       headers: [
-        { text: 'Регион', value: 'name' },
-        { text: 'Рождаемость', value: 'fertility' },
-        { text: 'Смертность', value: 'mortality' },
+        { text: 'Регион', value: 'name', sortable: true },
+        { text: 'Рождаемость', value: 'fertility', sortable: true },
+        { text: 'Смертность', value: 'mortality', sortable: true },
       ],
       regionItems: [
         {
@@ -482,16 +486,24 @@ export default {
       };
     },
     customSort(items, sortBy, sortDesc) {
+      if (!sortBy || !sortBy.length) return items;
+
       return items.sort((a, b) => {
-      const key = sortBy[0];
-      const desc = sortDesc[0];
-      let valA = a[key];
-      let valB = b[key];
-      if (typeof valA === 'object' && valA !== null) valA = parseFloat(valA['2024']);
-      if (typeof valB === 'object' && valB !== null) valB = parseFloat(valB['2024']);
-      if (valA < valB) return desc ? 1 : -1;
-      if (valA > valB) return desc ? -1 : 1;
-      return 0;
+        const key = sortBy[0];
+        const desc = sortDesc[0];
+        let valA = a[key];
+        let valB = b[key];
+
+        if (typeof valA === 'object' && valA !== null) {
+          valA = parseFloat(valA['2024']) || 0;
+        }
+        if (typeof valB === 'object' && valB !== null) {
+          valB = parseFloat(valB['2024']) || 0;
+        }
+
+        if (valA < valB) return desc ? 1 : -1;
+        if (valA > valB) return desc ? -1 : 1;
+        return 0;
       });
     },
   },
