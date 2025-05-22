@@ -12,11 +12,9 @@
           :container="false"
           :popoverClass="'lang-tooltip'"
         >
-          <!-- Popover target -->
           <button class="lang-toggle">
             {{ selectedLanguage === 'Русский' ? 'РУС' : 'ҚАЗ' }}
           </button>
-          <!-- Popover content -->
           <template slot="popover">
             <div class="lang-menu tooltip-body">
               <div

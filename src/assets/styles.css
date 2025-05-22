@@ -1037,12 +1037,12 @@
   margin-right: 5px;
 }
 
-/* Убедимся, что поповер изначально скрыт, если не открыт */
+
 .tooltip.popover[aria-hidden="true"] {
   display: none !important;
 }
 
-/* Убираем возможные остатки от v-tooltip */
+
 .v-tooltip__content {
   display: none !important;
 }
