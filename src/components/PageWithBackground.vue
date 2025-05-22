@@ -3,13 +3,54 @@
     <header class="page-header">
       <div class="header-content">
         <h1>Северо-Казахстанская область</h1>
-        <button
-          class="lang-toggle"
-          ref="langToggle"
-          v-tooltip="tooltipOptions"
+        <v-popover
+          ref="popover"
+          :placement="'bottom-end'"
+          :offset="5"
+          :trigger="'click'"
+          :autoHide="true"
+          :container="false"
+          :popoverClass="'lang-tooltip'"
         >
-          {{ selectedLanguage === 'Русский' ? 'РУС' : 'ҚАЗ' }}
-        </button>
+          <!-- Popover target -->
+          <button class="lang-toggle">
+            {{ selectedLanguage === 'Русский' ? 'РУС' : 'ҚАЗ' }}
+          </button>
+          <!-- Popover content -->
+          <template slot="popover">
+            <div class="lang-menu tooltip-body">
+              <div
+                class="lang-option"
+                @click="selectLanguage('Қазақ')"
+              >
+                <i
+                  v-if="selectedLanguage === 'Қазақ'"
+                  class="fa-solid fa-check checkmark"
+                ></i>
+                <span
+                  v-else
+                  class="checkmark-placeholder"
+                ></span>
+                Қазақ
+              </div>
+              <div
+                class="lang-option"
+                @click="selectLanguage('Русский')"
+              >
+                <i
+                  v-if="selectedLanguage === 'Русский'"
+                  class="fa-solid fa-check checkmark"
+                ></i>
+                <span
+                  v-else
+                  class="checkmark-placeholder"
+                ></span>
+                Русский
+              </div>
+              <div class="lang-title">Выбор языка интерфейса</div>
+            </div>
+          </template>
+        </v-popover>
       </div>
     </header>
     <div class="main-wrapper">
@@ -64,11 +105,13 @@
 
 <script>
 import MapCard from './MapCard.vue';
+import { VPopover } from 'v-tooltip'; 
 
 export default {
   name: 'PageWithBackground',
   components: {
-    MapCard
+    MapCard,
+    'v-popover': VPopover 
   },
   props: {
     backgroundColor: {
@@ -81,7 +124,6 @@ export default {
       activeModule: 1,
       activeLink: null,
       selectedLanguage: 'Русский',
-      tooltipInstance: null,
       moduleLinks: {
         1: [
           { href: "http://general:81/dist/", icon: "fa-solid fa-chart-line", label: "Общие сведения" },
@@ -113,44 +155,9 @@ export default {
       return {
         backgroundColor: this.backgroundColor
       };
-    },
-    tooltipOptions() {
-      return {
-        content: this.tooltipContent,
-        placement: 'bottom-end',
-        html: true,
-        offset: 5,
-        classes: 'lang-tooltip',
-        trigger: 'click',
-        hideOnTargetClick: false
-      };
-    },
-    tooltipContent() {
-      return `
-        <div class="lang-menu tooltip-body">
-          <div class="lang-option" onclick="window.selectLanguage('Қазақ'); window.closeTooltip();">
-            ${this.selectedLanguage === 'Қазақ' ? '<i class="fa-solid fa-check checkmark"></i>' : '<span class="checkmark-placeholder"></span>'}
-            Қазақ
-          </div>
-          <div class="lang-option" onclick="window.selectLanguage('Русский'); window.closeTooltip();">
-            ${this.selectedLanguage === 'Русский' ? '<i class="fa-solid fa-check checkmark"></i>' : '<span class="checkmark-placeholder"></span>'}
-            Русский
-          </div>
-          <div class="lang-title">Выбор языка интерфейса</div>
-        </div>
-      `;
     }
   },
   methods: {
-    toggleCards() {
-      this.isExpanded = !this.isExpanded;
-      const cardContainer = document.querySelector('.card-container');
-      if (this.isExpanded) {
-        cardContainer.classList.add('expanded');
-      } else {
-        cardContainer.classList.remove('expanded');
-      }
-    },
     selectModule(moduleId) {
       this.activeModule = moduleId;
     },
@@ -180,34 +187,15 @@ export default {
     },
     selectLanguage(lang) {
       this.selectedLanguage = lang;
-    },
-    closeTooltip() {
-      if (this.$refs.langToggle && this.$refs.langToggle._tooltip) {
-        this.$refs.langToggle._tooltip.hide();
-      }
-    },
-    handleDocumentClick(event) {
-      const langToggle = this.$refs.langToggle;
-      const tooltipBody = document.querySelector('.tooltip-body');
-
-      const clickedInsideButton = langToggle && langToggle.contains(event.target);
-      const clickedInsideTooltip = tooltipBody && tooltipBody.contains(event.target);
-
-      if (!clickedInsideButton && !clickedInsideTooltip) {
-        this.closeTooltip();
-      }
+      this.$refs.popover.hide(); 
     }
   },
   mounted() {
     this.initializeActiveLink();
     window.selectLanguage = this.selectLanguage.bind(this);
-    window.closeTooltip = this.closeTooltip.bind(this);
-    document.addEventListener('click', this.handleDocumentClick, true);
   },
   beforeDestroy() {
     window.selectLanguage = null;
-    window.closeTooltip = null;
-    document.removeEventListener('click', this.handleDocumentClick, true);
   }
 };
 </script>
@@ -324,4 +312,5 @@ export default {
   flex-grow: 1;
   padding: 0px;
 }
+
 </style>
