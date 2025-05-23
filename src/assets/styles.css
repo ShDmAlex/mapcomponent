@@ -963,6 +963,9 @@
   font-size: 12px;
   cursor: pointer;
   transition: background-color 0.2s;
+  position: relative;
+  min-width: 45px;
+  
 }
 
 .lang-toggle:hover {
@@ -974,18 +977,15 @@
   border-radius: 4px;
   padding: 0;
   font-size: 12px;
-  width: 190px;
+  width: 180px;
   position: absolute;
   opacity: 1;
   z-index: 1000;
+  height: auto;
 }
 
-.tooltip.popover .popover-inner {
-  background: #ffffff;
-  color: #333;
-  border-radius: 4px;
-  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
-}
+
+
 
 .tooltip.popover .lang-menu {
   padding: 5px;
@@ -1003,15 +1003,19 @@
 }
 
 .tooltip.popover .lang-title {
-  padding: 5px;
+  padding: 7px;
   background-color: #f3edb3d5;
   color: #333;
   text-align: center;
   font-size: 12px;
   border-radius: 0 0 4px 4px;
-  width: 100%;
   box-sizing: border-box;
   border-top: 1px solid #ccc;
+  margin-top: 5px;
+  width: 180px;
+  margin-left: -5px; 
+  margin-right: -5px;
+  margin-bottom: -5px;
 }
 
 .tooltip.popover .popover-arrow {
@@ -1021,9 +1025,10 @@
   border-style: solid;
   border-width: 0 5px 5px 5px;
   border-color: transparent transparent #fff transparent;
-  left: 50%;
+  left: 90%;
   top: -5px;
-  transform: translateX(-50%);
+  transform: none;
+  
 }
 
 .tooltip.popover .checkmark {

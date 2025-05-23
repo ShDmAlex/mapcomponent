@@ -105,6 +105,7 @@
 import MapCard from './MapCard.vue';
 import { VPopover } from 'v-tooltip'; 
 
+
 export default {
   name: 'PageWithBackground',
   components: {
@@ -293,6 +294,7 @@ export default {
   background-color: #1f2324;
   padding: 10px;
   color: white;
+  position: relative;
 }
 
 .header-content {
