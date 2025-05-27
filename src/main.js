@@ -9,7 +9,9 @@ import VueCountUp from 'vue-countup-v2';
 import './assets/styles.css'; 
 
 
-Vue.use(VTooltip);
+Vue.use(VTooltip, {
+  disposeTimeout: 5000000
+});
 Vue.use(VueCountUp);
 Vue.use(VueApexCharts);
 Vue.component('ApexChart', VueApexCharts);
