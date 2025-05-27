@@ -4,46 +4,34 @@
       <div class="header-content">
         <h1>Северо-Казахстанская область</h1>
         <v-popover
-          ref="popover"
           :placement="'bottom-end'"
           :offset="5"
           :trigger="'click'"
           :autoHide="true"
-          :container="false"
+          :container="'body'"
           :popoverClass="'lang-tooltip'"
         >
-          <button class="lang-toggle">
-            {{ selectedLanguage === 'Русский' ? 'РУС' : 'ҚАЗ' }}
+          <button class="lang-toggle" ref="langToggle">
+            {{ getShortName(selectedLanguage) }}
           </button>
           <template slot="popover">
             <div class="lang-menu tooltip-body">
               <div
+                v-for="lang in languages"
+                :key="lang.lang_key"
                 class="lang-option"
-                @click="selectLanguage('Қазақ')"
+                v-close-popover
+                @click="selectLanguage(lang.lang_key)"
               >
                 <i
-                  v-if="selectedLanguage === 'Қазақ'"
+                  v-if="selectedLanguage === lang.lang_key"
                   class="fa-solid fa-check checkmark"
                 ></i>
                 <span
                   v-else
                   class="checkmark-placeholder"
                 ></span>
-                Қазақ
-              </div>
-              <div
-                class="lang-option"
-                @click="selectLanguage('Русский')"
-              >
-                <i
-                  v-if="selectedLanguage === 'Русский'"
-                  class="fa-solid fa-check checkmark"
-                ></i>
-                <span
-                  v-else
-                  class="checkmark-placeholder"
-                ></span>
-                Русский
+                {{ lang.lang_name }}
               </div>
               <div class="lang-title">Выбор языка интерфейса</div>
             </div>
@@ -122,7 +110,11 @@ export default {
     return {
       activeModule: 1,
       activeLink: null,
-      selectedLanguage: 'Русский',
+      selectedLanguage: 'ru',
+      languages: [
+        { lang_key: 'ru', lang_name: 'Русский', lang_short_name: 'РУС' },
+        { lang_key: 'kz', lang_name: 'Қазақ', lang_short_name: 'ҚАЗ' }
+      ],
       moduleLinks: {
         1: [
           { href: "http://general:81/dist/", icon: "fa-solid fa-chart-line", label: "Общие сведения" },
@@ -146,6 +138,34 @@ export default {
         "/trade/dist/index.html": "#trade",
         "/animal/dist/index.html": "#animal",
         "/plant/dist/index.html": "#plant"
+      },
+      popperOptions: {
+        modifiers: [
+          {
+            name: 'computeStyles',
+            options: {
+              gpuAcceleration: false
+            }
+          },
+          {
+            name: 'preventOverflow',
+            options: {
+              boundary: 'viewport'
+            }
+          },
+          {
+            name: 'flip',
+            options: {
+              enabled: true
+            }
+          },
+          {
+            name: 'offset',
+            options: {
+              offset: [0, 5]
+            }
+          }
+        ]
       }
     };
   },
@@ -184,18 +204,18 @@ export default {
       }
       return 1;
     },
-    selectLanguage(lang) {
-      this.selectedLanguage = lang;
-      this.$refs.popover.hide(); 
+    selectLanguage(langKey) {
+      this.selectedLanguage = langKey;
+    },
+    getShortName(langKey) {
+      const lang = this.languages.find(l => l.lang_key === langKey);
+      return lang ? lang.lang_short_name : 'РУС';
     }
   },
   mounted() {
     this.initializeActiveLink();
-    window.selectLanguage = this.selectLanguage.bind(this);
   },
-  beforeDestroy() {
-    window.selectLanguage = null;
-  }
+  
 };
 </script>
 
