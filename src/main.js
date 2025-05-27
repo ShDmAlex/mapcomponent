@@ -10,7 +10,7 @@ import './assets/styles.css';
 
 
 Vue.use(VTooltip, {
-  disposeTimeout: 5000000
+  disposeTimeout: 50000000
 });
 Vue.use(VueCountUp);
 Vue.use(VueApexCharts);
