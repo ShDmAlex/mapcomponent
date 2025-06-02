@@ -1,138 +1,195 @@
 <template>
-  <div class="grid-container">
-    <div class="chart-card chart-card-first">
-      <div class="card-header">Административно-территориальное деление области</div>
-      <div class="card-content">
-        <map-component
-          :region-items="regionItems"
-          :path-data-customization-method="customizePathColors"
-          :text-data-customization-method="customizePathTexts"
-          :zoom-on-select="false"
-          :selected-region-id="selectedRegionId"
-          :tooltip-html-external="tooltipHtml"
-          :tooltip-event="tooltipEvent"
-          @region-selected="handleRegionSelect"
-          @tooltip-show="handleTooltipShow"
-        />
-      </div>
-    </div>
+  <div class="page-wrapper">
+    <transition name="slide-left" mode="out-in">
+      <div :key="currentPageIndex" class="page-content">
+        <div v-if="currentPageIndex === 0" class="grid-container">
+          
+          <div class="chart-card chart-card-first">
+            <div class="card-header">Административно-территориальное деление области</div>
+            <div class="card-content">
+              <map-component
+                :region-items="regionItems"
+                :path-data-customization-method="customizePathColors"
+                :text-data-customization-method="customizePathTexts"
+                :zoom-on-select="false"
+                :selected-region-id="selectedRegionId"
+                :tooltip-html-external="tooltipHtml"
+                :tooltip-event="tooltipEvent"
+                @region-selected="handleRegionSelect"
+                @tooltip-show="handleTooltipShow"
+              />
+            </div>
+          </div>
 
-    <div class="chart-card chart-card-second">
-      <div class="card-header">Общий уровень смертности и рождаемости, чел. на 1 тыс. чел.</div>
-      <div class="card-content">
-        <div class="table-scroll-container">
-          <v-data-table
-            :headers="headers"
-            :items="regionItems"
-            :custom-sort="customSort"
-            :sort-by.sync="sortBy"
-            :sort-desc.sync="sortDesc"
-            height="calc(20vh - 150px)"
-            class="custom-table elevation-1"
-            disable-pagination
-            hide-default-footer
-          >
+          <div class="chart-card chart-card-second">
+            <div class="card-header">Общий уровень смертности и рождаемости, чел. на 1 тыс. чел.</div>
+            <div class="card-content">
+              <div class="table-scroll-container">
+                <v-data-table
+                  :headers="headers"
+                  :items="regionItems"
+                  :custom-sort="customSort"
+                  :sort-by.sync="sortBy"
+                  :sort-desc.sync="sortDesc"
+                  height="calc(20vh - 150px)"
+                  class="custom-table elevation-1"
+                  disable-pagination
+                  hide-default-footer
+                >
+                  <template slot="item.fertility" slot-scope="{ item }">
+                    <div class="progress-container">
+                      <v-progress-linear
+                        :value="getFertilityPercent(item)"
+                        height="18"
+                        color="rgb(76, 175, 80)"
+                        rounded
+                      />
+                      <div class="progress-label">{{ item.fertility['2024'] }}</div>
+                    </div>
+                  </template>
 
-            <template slot="item.fertility" slot-scope="{ item }">
-              <div class="progress-container">
-                <v-progress-linear
-                  :value="getFertilityPercent(item)"
-                  height="18"
-                  color="rgb(76, 175, 80)"
-                  rounded
-                />
-                <div class="progress-label">{{ item.fertility['2024'] }}</div>
+                  <template slot="item.mortality" slot-scope="{ item }">
+                    <div class="progress-container">
+                      <v-progress-linear
+                        :value="getMortalityPercent(item)"
+                        height="18"
+                        color="rgb(120, 144, 156)"
+                        rounded
+                      />
+                      <div class="progress-label">{{ item.mortality['2024'] }}</div>
+                    </div>
+                  </template>
+                </v-data-table>
               </div>
-            </template>
+            </div>
+          </div>
 
-            <template slot="item.mortality" slot-scope="{ item }">
-              <div class="progress-container">
-                <v-progress-linear
-                  :value="getMortalityPercent(item)"
-                  height="18" 
-                  color="rgb(120, 144, 156)"
-                  rounded
-                />
-                <div class="progress-label">{{ item.mortality['2024'] }}</div>
+          <div class="chart-card chart-card-third">
+            <div class="card-header">Смертность и рождаемость, чел. на 1 тыс. чел.</div>
+            <div class="card-content">
+              <div class="stats-container" v-if="selectedRegion">
+                <div class="stats-row">
+                  <div class="stats-year">2023 г.</div>
+                  <div class="stats-year">2024 г.</div>
+                </div>
+                <div class="stats-row">
+                  <div class="stats-item">
+                    <span class="stats-label">Рождаемость</span>
+                    <span class="stats-value fertility">
+                      <count-up
+                        :key="`fertility-2023-${selectedRegion.id}`"
+                        :end-val="parseFloat(selectedRegion.fertility['2023'])"
+                        :options="getCountUpOptions(selectedRegion.fertility['2023'])"
+                      ></count-up>
+                    </span>
+                  </div>
+                  <div class="stats-icon">
+                    <v-icon color="#4CAF50" size="75">fas fa-baby-carriage</v-icon>
+                  </div>
+                  <div class="stats-item">
+                    <span class="stats-label">Рождаемость</span>
+                    <span class="stats-value fertility">
+                      <count-up
+                        :key="`fertility-2024-${selectedRegion.id}`"
+                        :end-val="parseFloat(selectedRegion.fertility['2024'])"
+                        :options="getCountUpOptions(selectedRegion.fertility['2024'])"
+                      ></count-up>
+                    </span>
+                  </div>
+                </div>
+                <div class="stats-row">
+                  <div class="stats-item">
+                    <span class="stats-label">Смертность</span>
+                    <span class="stats-value mortality">
+                      <count-up
+                        :key="`mortality-2023-${selectedRegion.id}`"
+                        :end-val="parseFloat(selectedRegion.mortality['2023'])"
+                        :options="getCountUpOptions(selectedRegion.mortality['2023'])"
+                      ></count-up>
+                    </span>
+                  </div>
+                  <div class="stats-icon">
+                    <v-icon color="#78909C" size="75">fas fa-cross</v-icon>
+                  </div>
+                  <div class="stats-item">
+                    <span class="stats-label">Смертность</span>
+                    <span class="stats-value mortality">
+                      <count-up
+                        :key="`mortality-2024-${selectedRegion.id}`"
+                        :end-val="parseFloat(selectedRegion.mortality['2024'])"
+                        :options="getCountUpOptions(selectedRegion.mortality['2024'])"
+                      ></count-up>
+                    </span>
+                  </div>
+                </div>
               </div>
-            </template>
-          </v-data-table>
-        </div>
-      </div>
-    </div>
+            </div>
+          </div>
 
-    <div class="chart-card chart-card-third">
-      <div class="card-header">Смертность и рождаемость, чел. на 1 тыс. чел.</div>
-      <div class="card-content">
-        <div class="stats-container" v-if="selectedRegion">
-          <div class="stats-row">
-            <div class="stats-year">2023 г.</div>
-            <div class="stats-year">2024 г.</div>
-          </div>
-          <div class="stats-row">
-            <div class="stats-item">
-              <span class="stats-label">Рождаемость</span>
-              <span class="stats-value fertility">
-                <count-up
-                  :key="`fertility-2023-${selectedRegion.id}`"
-                  :end-val="parseFloat(selectedRegion.fertility['2023'])"
-                  :options="getCountUpOptions(selectedRegion.fertility['2023'])"
-                ></count-up>
-              </span>
-            </div>
-            <div class="stats-icon">
-              <v-icon color="#4CAF50" size='75'>fas fa-baby-carriage</v-icon>
-            </div>
-            <div class="stats-item">
-              <span class="stats-label">Рождаемость</span>
-              <span class="stats-value fertility">
-                <count-up
-                  :key="`fertility-2024-${selectedRegion.id}`"
-                  :end-val="parseFloat(selectedRegion.fertility['2024'])"
-                  :options="getCountUpOptions(selectedRegion.fertility['2024'])"
-                ></count-up>
-              </span>
-            </div>
-          </div>
-          <div class="stats-row">
-            <div class="stats-item">
-              <span class="stats-label">Смертность</span>
-              <span class="stats-value mortality">
-                <count-up
-                  :key="`mortality-2023-${selectedRegion.id}`"
-                  :end-val="parseFloat(selectedRegion.mortality['2023'])"
-                  :options="getCountUpOptions(selectedRegion.mortality['2023'])"
-                ></count-up>
-              </span>
-            </div>
-            <div class="stats-icon">
-              <v-icon color="#78909C" size='75'>fas fa-cross</v-icon>
-            </div>
-            <div class="stats-item">
-              <span class="stats-label">Смертность</span>
-              <span class="stats-value mortality">
-                <count-up
-                  :key="`mortality-2024-${selectedRegion.id}`"
-                  :end-val="parseFloat(selectedRegion.mortality['2024'])"
-                  :options="getCountUpOptions(selectedRegion.mortality['2024'])"
-                ></count-up>
-              </span>
+          <div class="chart-card chart-card-four">
+            <div class="card-header">Смертность, чел. на 1 тыс. чел.</div>
+            <div class="card-content">
+              <div class="road-container">
+                <road-chart
+                  height="100%"
+                  :data-source="roadChartData"
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="chart-card chart-card-four">
-      <div class="card-header">Смертность, чел. на 1 тыс. чел.</div>
-      <div class="card-content">
-        <div class="road-container">
-          <road-chart
-            height="100%"
-            :data-source="roadChartData"
-          />
+        <div v-else-if="currentPageIndex === 1" class="grid-container">
+      
+          <div class="chart-card chart-card-five">
+            <div class="card-header">Следующая страница</div>
+            <div class="card-content">
+              <div class="road-container">
+                <val-chart
+                  height="100%"
+                  :data-source="valChartData"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-card chart-card-six">
+            <div class="card-header">Сельское хозяйство по регионам</div>
+            <div class="chart-switcher">
+              <label>
+                <input type="radio" v-model="selectedChart" value="chart1" /> в % к предыдущему году
+              </label>
+              <label>
+                <input type="radio" v-model="selectedChart" value="chart2" /> млрд. тг
+              </label>
+            </div>
+            <div class="card-content">
+              <div class="road-container">
+                  <radio-chart
+                    height="100%"
+                    :data-source="barSixChartData"
+                  />
+                
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
+    </transition>
+
+    <div class="page-navigation" :class="{ 'on-right': isButtonOnRight, 'on-left': !isButtonOnRight }">
+      <v-btn
+        class="nav-btn"
+        color="#ffffff00"
+        width="40px" 
+        height="40px"
+        fab
+        @click="navigate"
+        
+      >
+        <v-icon color="#fff" size="20"> {{ isButtonOnRight ? 'fas fa-chevron-right' : 'fas fa-chevron-left' }} </v-icon>
+      </v-btn>
     </div>
   </div>
 </template>
@@ -140,6 +197,8 @@
 <script>
 import MapComponent from './MapComponent.vue';
 import RoadChart from './RoadChart.vue';
+import ValChart from './ValChart.vue';
+import RadioChart from './RadioChart.vue';
 import CountUp from 'vue-countup-v2';
 
 export default {
@@ -147,20 +206,49 @@ export default {
   components: {
     MapComponent,
     RoadChart,
+    ValChart,
+    RadioChart,
     CountUp,
   },
   data() {
     return {
+      currentPageIndex: 0,
+      pages: [
+        'map-card', 
+        'placeholder',
+      ],
+      isButtonOnRight: true,
+      transitionName: 'slide-left',
       sortBy: 'name',
       sortDesc: false,
       selectedRegionId: null,
       tooltipHtml: '',
       tooltipEvent: null,
+      selectedChart: 'chart1',
       headers: [
         { text: 'Регион', value: 'name', sortable: true },
         { text: 'Рождаемость', value: 'fertility', sortable: true },
         { text: 'Смертность', value: 'mortality', sortable: true },
       ],
+      valChartData: {
+      categories: ['2023', '2022', '2021'],
+      colors: ['#f3a100', '#a0c913'],
+      series: [
+        {
+          name: 'Растениеводство',
+          data: [577.6, 909.4, 679.3],
+        },
+        {
+          name: 'Животноводство',
+          data: [179.2, 263, 219.9],
+        },
+      ],
+      percentChanges: [
+        { year: '2023', change: '-16.8%' },
+        { year: '2022', change: '+12.3%' },
+        { year: '2021', change: '-12.2%' },
+      ],
+    },
       regionItems: [
         {
           id: 4,
@@ -169,6 +257,7 @@ export default {
           percentage: '62.5%',
           fertility: { 2023: '11.24', 2024: '9.82' },
           mortality: { 2023: '12.01', 2024: '12.28' },
+          economicData: { percentChange: -8.7, productionVolume: 63.5 },
           chartData: {
             maternal: { 2023: 0, 2024: 0 },
             child: { 2023: 0, 2024: 0 },
@@ -182,6 +271,7 @@ export default {
           percentage: '100%',
           fertility: { 2023: '14.11', 2024: '12.06' },
           mortality: { 2023: '9.46', 2024: '8.97' },
+          economicData: { percentChange: -57.1, productionVolume: 23.9 },
           chartData: {
             maternal: { 2023: '0', 2024: '0' },
             child: { 2023: '0', 2024: '0' },
@@ -195,6 +285,7 @@ export default {
           percentage: '',
           fertility: { 2023: '9.29', 2024: '7.72' },
           mortality: { 2023: '13.4', 2024: '15.28' },
+          economicData: { percentChange: 26.1, productionVolume: 53.6 },
           chartData: {
             maternal: { 2023: '0', 2024: '0' },
             child: { 2023: '0', 2024: '0' },
@@ -208,6 +299,7 @@ export default {
           percentage: '100%',
           fertility: { 2023: '9.68', 2024: '8.71' },
           mortality: { 2023: '12.05', 2024: '10.59' },
+          economicData: { percentChange: 0, productionVolume: 99.0 },
           chartData: {
             maternal: { 2023: '0', 2024: '0' },
             child: { 2023: '0', 2024: '0' },
@@ -221,6 +313,7 @@ export default {
           percentage: '17.1%',
           fertility: { 2023: '9.37', 2024: '9.02' },
           mortality: { 2023: '13.21', 2024: '12.82' },
+          economicData: { percentChange: 19.6, productionVolume: 62.4 },
           chartData: {
             maternal: { 2023: '0', 2024: '0' },
             child: { 2023: '0', 2024: '0' },
@@ -234,6 +327,7 @@ export default {
           percentage: '0%',
           fertility: { 2023: '10.81', 2024: '11.28' },
           mortality: { 2023: '10.76', 2024: '13.03' },
+          economicData: { percentChange: 2.4, productionVolume: 51.0 },
           chartData: {
             maternal: { 2023: '0', 2024: '0' },
             child: { 2023: '0', 2024: '0' },
@@ -247,6 +341,7 @@ export default {
           percentage: '76%',
           fertility: { 2023: '9.97', 2024: '9.29' },
           mortality: { 2023: '10.36', 2024: '10.52' },
+          economicData: { percentChange: 29.4, productionVolume: 84.3 },
           chartData: {
             maternal: { 2023: '0', 2024: '0' },
             child: { 2023: '0', 2024: '0' },
@@ -260,6 +355,7 @@ export default {
           percentage: '36%',
           fertility: { 2023: '9.12', 2024: '10.61' },
           mortality: { 2023: '12.66', 2024: '13.53' },
+          economicData: { percentChange: -14.2, productionVolume: 65.2 },
           chartData: {
             maternal: { 2023: '0', 2024: '0' },
             child: { 2023: '0', 2024: '0' },
@@ -273,6 +369,7 @@ export default {
           percentage: '',
           fertility: { 2023: '10.59', 2024: '10.23' },
           mortality: { 2023: '13.23', 2024: '12.65' },
+          economicData: { percentChange: 17.5, productionVolume: 38.1 },
           chartData: {
             maternal: { 2023: '0', 2024: '0' },
             child: { 2023: '0', 2024: '0' },
@@ -286,6 +383,7 @@ export default {
           percentage: '21.7%',
           fertility: { 2023: '10.43', 2024: '10.02' },
           mortality: { 2023: '11.88', 2024: '10.43' },
+          economicData: { percentChange: 17.5, productionVolume: 38.1 },
           chartData: {
             maternal: { 2023: '0', 2024: '0' },
             child: { 2023: '0', 2024: '0' },
@@ -299,6 +397,7 @@ export default {
           percentage: '',
           fertility: { 2023: '9.31', 2024: '9.92' },
           mortality: { 2023: '11.46', 2024: '12.58' },
+          economicData: { percentChange: 10.1, productionVolume: 35.0 },
           chartData: {
             maternal: { 2023: '0', 2024: '0' },
             child: { 2023: '0', 2024: '0' },
@@ -312,6 +411,7 @@ export default {
           percentage: '35.3%',
           fertility: { 2023: '16.09', 2024: '14.61' },
           mortality: { 2023: '8.2', 2024: '7.41' },
+          economicData: { percentChange: -47.0, productionVolume: 24.1 },
           chartData: {
             maternal: { 2023: '0', 2024: '0' },
             child: { 2023: '0', 2024: '0' },
@@ -325,6 +425,7 @@ export default {
           percentage: '100%',
           fertility: { 2023: '11.29', 2024: '11.07' },
           mortality: { 2023: '13.53', 2024: '14.05' },
+          economicData: { percentChange: -18.5, productionVolume: 38.8 },
           chartData: {
             maternal: { 2023: '0', 2024: '0' },
             child: { 2023: '0', 2024: '0' },
@@ -338,6 +439,7 @@ export default {
           percentage: '○ г. Петропавловск - 87.3%',
           fertility: { 2023: '10.36', 2024: '9.53' },
           mortality: { 2023: '10.14', 2024: '11.22' },
+          economicData: { percentChange: 11.4, productionVolume: 21.4 },
           chartData: {
             maternal: { 2023: '0', 2024: '0' },
             child: { 2023: '0', 2024: '0' },
@@ -351,6 +453,7 @@ export default {
           percentage: '',
           fertility: { 2023: '10.47', 2024: '9.81' },
           mortality: { 2023: '11.08', 2024: '11.52' },
+          economicData: { percentChange: 0, productionVolume: 0 },
           chartData: {
             maternal: { 2023: '6.52', 2024: '2.1' },
             child: { 2023: '10.47', 2024: '9.83' },
@@ -364,6 +467,7 @@ export default {
         years: ['2023', '2024'], 
         dataKeys: ['maternal', 'child', 'infant'], 
       },
+      
     };
   },
   mounted() {
@@ -373,6 +477,17 @@ export default {
     
   },
   methods: {
+    navigate() {
+      if (this.isButtonOnRight) {
+        this.transitionName = 'slide-left';
+        this.currentPageIndex = (this.currentPageIndex + 1) % this.pages.length;
+        this.isButtonOnRight = false;
+      } else {
+        this.transitionName = 'slide-right';
+        this.currentPageIndex = (this.currentPageIndex - 1 + this.pages.length) % this.pages.length;
+        this.isButtonOnRight = true;
+      }
+    },
     handleRegionSelect(regionId) {
       this.selectedRegionId = regionId;
     },
@@ -536,6 +651,18 @@ export default {
         categories,
         colors,
         series,
+      };
+    },
+    barSixChartData() {
+      const regions = this.regionItems.filter(item => item.id !== '14' && item.name !== 'СКО' && item.economicData);
+      return {
+        categories: regions.map(item => item.name),
+        series: [{
+          data: this.selectedChart === 'chart1'
+            ? regions.map(item => item.economicData.percentChange)
+            : regions.map(item => item.economicData.productionVolume),
+        }],
+        
       };
     },
   },

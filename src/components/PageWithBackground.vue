@@ -225,6 +225,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  
 }
 
 .main-wrapper {
@@ -232,6 +233,7 @@ export default {
   flex-grow: 1;
   background-color: #1f2324;
   justify-content: space-between;
+  
 }
 
 .navigation-menu {

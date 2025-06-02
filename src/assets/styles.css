@@ -47,6 +47,18 @@
     display: flex;
     flex-direction: column;
   }
+  .chart-card-five {
+  grid-column: 1;
+  grid-row: 1; 
+  width: 100%;
+  height: calc(100vh / 2 - 32px);
+}
+.chart-card-six {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+    height: calc(100vh / 2 - 32px);
+  }
   .card-header {
     font-size: 15px;
     color: #ffffff;
@@ -313,7 +325,7 @@
     top: 0;
     z-index: 1;
   }
-  .road-container{
+  .road-container {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -321,6 +333,7 @@
     min-height: 250px;
     
   }
+  
   
   .stats-container {
     display: flex;
@@ -466,4 +479,129 @@
 
 .v-tooltip__content {
   display: none !important;
+}
+
+.page-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.page-content {
+  width: 100%;
+  height: 100%;
+}
+
+
+
+.page-navigation {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.page-navigation.on-right {
+  right: 20px;
+}
+
+.page-navigation.on-left {
+  left: 20px;
+}
+
+.slide-left-enter-active,
+.slide-left-leave-active {
+  transition: all 0.5s ease;
+  position: absolute;
+  width: 100%;
+}
+
+.slide-left-enter {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.slide-left-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.slide-left-enter-to,
+.slide-left-leave {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all 0.5s ease;
+  position: absolute;
+  width: 100%;
+}
+
+.slide-right-enter {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.slide-right-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.slide-right-enter-to,
+.slide-right-leave {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.chart-switcher {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  margin-bottom: -20px;
+  margin-top: 10px;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+.chart-switcher label {
+  margin-right: 11px;
+  color: #ffffff;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex; 
+  align-items: center; 
+}
+
+.chart-switcher input[type="radio"] {
+  cursor: pointer;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  background-color: transparent;
+  position: relative;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  margin-right: 5px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chart-switcher input[type="radio"]::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: transparent;
+  display: inline-block;
+}
+
+.chart-switcher input[type="radio"]:checked::before {
+  background-color: #ffffff;
 }
