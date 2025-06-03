@@ -144,12 +144,34 @@
           <div class="chart-card chart-card-five">
             <div class="card-header">Следующая страница</div>
             <div class="card-content">
-              <div class="road-container">
-                <val-chart
-                  height="100%"
-                  :data-source="valChartData"
-                />
-              </div>
+              <div class="road-container" ref="chartContainer">
+        <val-chart 
+        :data-source="valChartData"
+        @chart-ready="onChartReady" 
+        />
+        <v-chip
+          v-for="(label, index) in customLabels"
+          :key="index"
+          :style="{
+            position: 'absolute',
+            top: label.top + 'px',
+            left: label.left + 'px',
+            color: label.color,
+            backgroundColor: 'rgba(0,0,0,0.05)',
+            fontSize: '11px',
+            fontWeight: '500',
+            fontFamily: 'Montserrat-Regular, sans-serif',
+            pointerEvents: 'none',
+            whiteSpace: 'pre-line',
+            lineHeight: '1.2',
+          }"
+          small
+          label
+          text-color="inherit"
+        >
+          {{ label.change + '\n' + label.total }}
+        </v-chip>
+      </div>
             </div>
           </div>
 
@@ -212,6 +234,8 @@ export default {
   },
   data() {
     return {
+      customLabels: [],
+      apexChart: null,
       currentPageIndex: 0,
       pages: [
         'map-card', 
@@ -471,12 +495,107 @@ export default {
     };
   },
   mounted() {
-    
+    this.$nextTick(() => {
+    setTimeout(() => {
+      this.calculateLabelPositions();
+      this.$emit('chart-ready'); 
+    }, 500); 
+  });
+
+  window.addEventListener('resize', this.calculateLabelPositions);
+  },
+  beforeDestroy() {
+    if (this._chartMutationObserver) {
+      this._chartMutationObserver.disconnect();
+    }
+  
   },
   watch: {
-    
+    currentPageIndex(newIndex) {
+      if (newIndex !== 1) {
+        if (this.mutationObserver) {
+          this.mutationObserver.disconnect();
+          this.mutationObserver = null;
+        }
+        window.removeEventListener('resize', this.calculateLabelPositions);
+        if (this.retryTimeout) {
+          clearTimeout(this.retryTimeout);
+        }
+        this.customLabels = [];
+      }
+    },
+    valChartData: {
+      handler() {
+        this.$nextTick(() => {
+          this.calculateLabelPositions();
+        });
+      },
+      deep: true,
+    },
   },
+  
+  
   methods: {
+    onChartReady(chartInstance) {
+      this.apexChart = chartInstance;
+      this.calculateLabelPositions();
+      const chartEl = chartInstance?.el;
+      if (chartEl) {
+        const observer = new MutationObserver(() => {
+          this.calculateLabelPositions();
+        });
+        observer.observe(chartEl, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+        });
+        this._chartMutationObserver = observer;
+      }
+    },
+    
+    calculateLabelPositions() {
+      this.$nextTick(() => {
+        const chartEl = this.$refs.chartContainer?.querySelector('.apexcharts-inner');
+        if (!chartEl) return;
+
+        const barRects = chartEl.querySelectorAll('.apexcharts-bar-series .apexcharts-bar-area');
+        const yLabels = chartEl.querySelectorAll('.apexcharts-yaxis-texts-g text');
+        const containerRect = this.$refs.chartContainer.getBoundingClientRect();
+
+        if (barRects.length === 0 || yLabels.length === 0) return;
+
+        this.customLabels = this.valChartData.categories.map((category, index) => {
+          const labelEl = yLabels[index];
+          const labelBox = labelEl?.getBoundingClientRect();
+          const top = labelBox ? labelBox.top - containerRect.top - -30 : 0;
+
+          const barRect = barRects[index]?.getBoundingClientRect();
+          const left = barRect ? (barRect.right - containerRect.left + 10) : 0;
+
+
+          const percentChange = this.valChartData.percentChanges?.find((item) => item.year === category);
+          const change = percentChange?.change || '0%';
+          const isNegative = change.startsWith('-');
+          const color = isNegative ? '#FF4D4F' : '#52C41A';
+
+          let total = 0;
+          this.valChartData.series.forEach((serie) => {
+            if (serie.data && typeof serie.data[index] === 'number') {
+              total += serie.data[index];
+            }
+          });
+
+          return {
+            top,
+            left,
+            change,
+            total: total.toFixed(2),
+            color,
+          };
+        });
+      });
+    },
+
     navigate() {
       if (this.isButtonOnRight) {
         this.transitionName = 'slide-left';
