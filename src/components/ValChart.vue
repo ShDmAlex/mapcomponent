@@ -1,13 +1,11 @@
 <template>
-  <div style="position: relative; height: 100%;">
-    <ApexChart
-      type="bar"
-      height="100%"
-      :width="width"
-      :options="chartOptions"
-      :series="dataSource.series"
-    />
-  </div>
+  <ApexChart
+    type="bar"
+    height="100%"
+    :width="width"
+    :options="chartOptions"
+    :series="dataSource.series"
+  />
 </template>
 
 <script>
@@ -19,7 +17,7 @@ export default {
   props: {
     width: {
       type: [Number, String],
-      default: '95%',
+      default: '100%',
     },
     dataSource: {
       type: Object,
@@ -28,9 +26,14 @@ export default {
         series: [],
         categories: [],
         colors: [],
-        percentChanges: [],
+        customTotals: [],
       }),
     },
+  },
+  data() {
+    return {
+      horizontalTotal: true,
+    };
   },
   computed: {
     chartOptions() {
@@ -44,26 +47,52 @@ export default {
             speed: 800,
           },
           toolbar: { show: false },
+          
         },
+        dataLabels: {
+          position: 'center',
+      enabled: true,
+  offsetX: -6,
+  style: {
+    fontSize: '11px',
+    fontWeight: 400,
+    fontFamily: 'Montserrat-Regular',
+    colors: ['#ffffff'],
+  },
+        },
+
+
         plotOptions: {
           bar: {
             horizontal: true,
             barHeight: '70%',
             dataLabels: {
-              position: 'center',
-            },
+  total: {
+    enabled: this.horizontalTotal,
+    offsetX: 30,
+    offsetY: -10,
+    style: {
+      color: '#fff',
+      fontSize: '11px',
+      fontWeight: 'normal',
+      fontFamily: 'Montserrat-Regular',
+      
+      
+    },
+    formatter: function (val, opts) {
+  const index = opts.dataPointIndex;
+  const customTotals = opts.w.config.customTotals || [];
+  const totalEntry = customTotals[index];
+  if (!totalEntry) return '';
+  const [percent, total] = totalEntry;
+  const color = percent.includes('-') ? '#f44336' : '#43A047';
+  opts.w.config.plotOptions.bar.dataLabels.total.style.color = color;
+  return `${percent}\n${total.toFixed(1)}`;
+}
+
+  }, 
+    },
           },
-        },
-        dataLabels: {
-          enabled: true,
-          offsetX: -6,
-          style: {
-            fontSize: '11px',
-            fontWeight: 400,
-            fontFamily: 'Montserrat-Regular',
-            colors: ['#ffffff'],
-          },
-          formatter: (val) => val.toFixed(1),
         },
         grid: { show: false },
         stroke: { show: false },
@@ -130,8 +159,10 @@ export default {
             },
           },
         ],
+        customTotals: this.dataSource.customTotals,
       };
     },
   },
 };
 </script>
+

@@ -1,218 +1,162 @@
 <template>
   <div class="page-wrapper">
-    <transition name="slide-left" mode="out-in">
-      <div :key="currentPageIndex" class="page-content">
-        <div v-if="currentPageIndex === 0" class="grid-container">
-          
-          <div class="chart-card chart-card-first">
-            <div class="card-header">Административно-территориальное деление области</div>
-            <div class="card-content">
-              <map-component
-                :region-items="regionItems"
-                :path-data-customization-method="customizePathColors"
-                :text-data-customization-method="customizePathTexts"
-                :zoom-on-select="false"
-                :selected-region-id="selectedRegionId"
-                :tooltip-html-external="tooltipHtml"
-                :tooltip-event="tooltipEvent"
-                @region-selected="handleRegionSelect"
-                @tooltip-show="handleTooltipShow"
-              />
+    <slider-window>
+      <template v-slot:page1>
+        <div class="chart-card chart-card-first">
+          <div class="card-header">Административно-территориальное деление области</div>
+          <div class="card-content">
+            <map-component
+              :region-items="regionItems"
+              :path-data-customization-method="customizePathColors"
+              :text-data-customization-method="customizePathTexts"
+              :zoom-on-select="false"
+              :selected-region-id="selectedRegionId"
+              :tooltip-html-external="tooltipHtml"
+              :tooltip-event="tooltipEvent"
+              @region-selected="handleRegionSelect"
+              @tooltip-show="handleTooltipShow"
+            />
+          </div>
+        </div>
+        <div class="chart-card chart-card-second">
+          <div class="card-header">Общий уровень смертности и рождаемости, чел. на 1 тыс. чел.</div>
+          <div class="card-content">
+            <div class="table-scroll-container">
+              <v-data-table
+                :headers="headers"
+                :items="regionItems"
+                :custom-sort="customSort"
+                :sort-by.sync="sortBy"
+                :sort-desc.sync="sortDesc"
+                height="calc(20vh - 150px)"
+                class="custom-table elevation-1"
+                disable-pagination
+                hide-default-footer
+              >
+                <template slot="item.fertility" slot-scope="{ item }">
+                  <div class="progress-container">
+                    <v-progress-linear
+                      :value="getFertilityPercent(item)"
+                      height="18"
+                      color="rgb(76, 175, 80)"
+                      rounded
+                    />
+                    <div class="progress-label">{{ item.fertility['2024'] }}</div>
+                  </div>
+                </template>
+                <template slot="item.mortality" slot-scope="{ item }">
+                  <div class="progress-container">
+                    <v-progress-linear
+                      :value="getMortalityPercent(item)"
+                      height="18"
+                      color="rgb(120, 144, 156)"
+                      rounded
+                    />
+                    <div class="progress-label">{{ item.mortality['2024'] }}</div>
+                  </div>
+                </template>
+              </v-data-table>
             </div>
           </div>
-
-          <div class="chart-card chart-card-second">
-            <div class="card-header">Общий уровень смертности и рождаемости, чел. на 1 тыс. чел.</div>
-            <div class="card-content">
-              <div class="table-scroll-container">
-                <v-data-table
-                  :headers="headers"
-                  :items="regionItems"
-                  :custom-sort="customSort"
-                  :sort-by.sync="sortBy"
-                  :sort-desc.sync="sortDesc"
-                  height="calc(20vh - 150px)"
-                  class="custom-table elevation-1"
-                  disable-pagination
-                  hide-default-footer
-                >
-                  <template slot="item.fertility" slot-scope="{ item }">
-                    <div class="progress-container">
-                      <v-progress-linear
-                        :value="getFertilityPercent(item)"
-                        height="18"
-                        color="rgb(76, 175, 80)"
-                        rounded
-                      />
-                      <div class="progress-label">{{ item.fertility['2024'] }}</div>
-                    </div>
-                  </template>
-
-                  <template slot="item.mortality" slot-scope="{ item }">
-                    <div class="progress-container">
-                      <v-progress-linear
-                        :value="getMortalityPercent(item)"
-                        height="18"
-                        color="rgb(120, 144, 156)"
-                        rounded
-                      />
-                      <div class="progress-label">{{ item.mortality['2024'] }}</div>
-                    </div>
-                  </template>
-                </v-data-table>
+        </div>
+        <div class="chart-card chart-card-third">
+          <div class="card-header">Смертность и рождаемость, чел. на 1 тыс. чел.</div>
+          <div class="card-content">
+            <div class="stats-container" v-if="selectedRegion">
+              <div class="stats-row">
+                <div class="stats-year">2023 г.</div>
+                <div class="stats-year">2024 г.</div>
               </div>
-            </div>
-          </div>
-
-          <div class="chart-card chart-card-third">
-            <div class="card-header">Смертность и рождаемость, чел. на 1 тыс. чел.</div>
-            <div class="card-content">
-              <div class="stats-container" v-if="selectedRegion">
-                <div class="stats-row">
-                  <div class="stats-year">2023 г.</div>
-                  <div class="stats-year">2024 г.</div>
+              <div class="stats-row">
+                <div class="stats-item">
+                  <span class="stats-label">Рождаемость</span>
+                  <span class="stats-value fertility">
+                    <count-up
+                      :key="`fertility-2023-${selectedRegion.id}`"
+                      :end-val="parseFloat(selectedRegion.fertility['2023'])"
+                      :options="getCountUpOptions(selectedRegion.fertility['2023'])"
+                    ></count-up>
+                  </span>
                 </div>
-                <div class="stats-row">
-                  <div class="stats-item">
-                    <span class="stats-label">Рождаемость</span>
-                    <span class="stats-value fertility">
-                      <count-up
-                        :key="`fertility-2023-${selectedRegion.id}`"
-                        :end-val="parseFloat(selectedRegion.fertility['2023'])"
-                        :options="getCountUpOptions(selectedRegion.fertility['2023'])"
-                      ></count-up>
-                    </span>
-                  </div>
-                  <div class="stats-icon">
-                    <v-icon color="#4CAF50" size="75">fas fa-baby-carriage</v-icon>
-                  </div>
-                  <div class="stats-item">
-                    <span class="stats-label">Рождаемость</span>
-                    <span class="stats-value fertility">
-                      <count-up
-                        :key="`fertility-2024-${selectedRegion.id}`"
-                        :end-val="parseFloat(selectedRegion.fertility['2024'])"
-                        :options="getCountUpOptions(selectedRegion.fertility['2024'])"
-                      ></count-up>
-                    </span>
-                  </div>
+                <div class="stats-icon">
+                  <v-icon color="#4CAF50" size="75">fas fa-baby-carriage</v-icon>
                 </div>
-                <div class="stats-row">
-                  <div class="stats-item">
-                    <span class="stats-label">Смертность</span>
-                    <span class="stats-value mortality">
-                      <count-up
-                        :key="`mortality-2023-${selectedRegion.id}`"
-                        :end-val="parseFloat(selectedRegion.mortality['2023'])"
-                        :options="getCountUpOptions(selectedRegion.mortality['2023'])"
-                      ></count-up>
-                    </span>
-                  </div>
-                  <div class="stats-icon">
-                    <v-icon color="#78909C" size="75">fas fa-cross</v-icon>
-                  </div>
-                  <div class="stats-item">
-                    <span class="stats-label">Смертность</span>
-                    <span class="stats-value mortality">
-                      <count-up
-                        :key="`mortality-2024-${selectedRegion.id}`"
-                        :end-val="parseFloat(selectedRegion.mortality['2024'])"
-                        :options="getCountUpOptions(selectedRegion.mortality['2024'])"
-                      ></count-up>
-                    </span>
-                  </div>
+                <div class="stats-item">
+                  <span class="stats-label">Рождаемость</span>
+                  <span class="stats-value fertility">
+                    <count-up
+                      :key="`fertility-2024-${selectedRegion.id}`"
+                      :end-val="parseFloat(selectedRegion.fertility['2024'])"
+                      :options="getCountUpOptions(selectedRegion.fertility['2024'])"
+                    ></count-up>
+                  </span>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div class="chart-card chart-card-four">
-            <div class="card-header">Смертность, чел. на 1 тыс. чел.</div>
-            <div class="card-content">
-              <div class="road-container">
-                <road-chart
-                  height="100%"
-                  :data-source="roadChartData"
-                />
+              <div class="stats-row">
+                <div class="stats-item">
+                  <span class="stats-label">Смертность</span>
+                  <span class="stats-value mortality">
+                    <count-up
+                      :key="`mortality-2023-${selectedRegion.id}`"
+                      :end-val="parseFloat(selectedRegion.mortality['2023'])"
+                      :options="getCountUpOptions(selectedRegion.mortality['2023'])"
+                    ></count-up>
+                  </span>
+                </div>
+                <div class="stats-icon">
+                  <v-icon color="#78909C" size="75">fas fa-cross</v-icon>
+                </div>
+                <div class="stats-item">
+                  <span class="stats-label">Смертность</span>
+                  <span class="stats-value mortality">
+                    <count-up
+                      :key="`mortality-2024-${selectedRegion.id}`"
+                      :end-val="parseFloat(selectedRegion.mortality['2024'])"
+                      :options="getCountUpOptions(selectedRegion.mortality['2024'])"
+                    ></count-up>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        <div v-else-if="currentPageIndex === 1" class="grid-container">
-      
-          <div class="chart-card chart-card-five">
-            <div class="card-header">Следующая страница</div>
-            <div class="card-content">
-              <div class="road-container" ref="chartContainer">
-        <val-chart 
-        :data-source="valChartData"
-        @chart-ready="onChartReady" 
-        />
-        <v-chip
-          v-for="(label, index) in customLabels"
-          :key="index"
-          :style="{
-            position: 'absolute',
-            top: label.top + 'px',
-            left: label.left + 'px',
-            color: label.color,
-            backgroundColor: 'rgba(0,0,0,0.05)',
-            fontSize: '11px',
-            fontWeight: '500',
-            fontFamily: 'Montserrat-Regular, sans-serif',
-            pointerEvents: 'none',
-            whiteSpace: 'pre-line',
-            lineHeight: '1.2',
-          }"
-          small
-          label
-          text-color="inherit"
-        >
-          {{ label.change + '\n' + label.total }}
-        </v-chip>
-      </div>
+        <div class="chart-card chart-card-four">
+          <div class="card-header">Смертность, чел. на 1 тыс. чел.</div>
+          <div class="card-content">
+            <div class="road-container">
+              <road-chart height="100%" :data-source="roadChartData" />
             </div>
           </div>
-
-          <div class="chart-card chart-card-six">
-            <div class="card-header">Сельское хозяйство по регионам</div>
-            <div class="chart-switcher">
-              <label>
-                <input type="radio" v-model="selectedChart" value="chart1" /> в % к предыдущему году
-              </label>
-              <label>
-                <input type="radio" v-model="selectedChart" value="chart2" /> млрд. тг
-              </label>
-            </div>
-            <div class="card-content">
-              <div class="road-container">
-                  <radio-chart
-                    height="100%"
-                    :data-source="barSixChartData"
-                  />
-                
-              </div>
-            </div>
-          </div>
-
         </div>
-      </div>
-    </transition>
-
-    <div class="page-navigation" :class="{ 'on-right': isButtonOnRight, 'on-left': !isButtonOnRight }">
-      <v-btn
-        class="nav-btn"
-        color="#ffffff00"
-        width="40px" 
-        height="40px"
-        fab
-        @click="navigate"
-        
-      >
-        <v-icon color="#fff" size="20"> {{ isButtonOnRight ? 'fas fa-chevron-right' : 'fas fa-chevron-left' }} </v-icon>
-      </v-btn>
-    </div>
+      </template>
+      <template v-slot:page2>
+        <div class="chart-card chart-card-five">
+          <div class="card-header">Сельское хозяйство</div>
+          <div class="card-content">
+            <div class="road-container" ref="chartContainer">
+              <val-chart height="100%" :data-source="valChartData" />
+              
+            </div>
+          </div>
+        </div>
+        <div class="chart-card chart-card-six">
+          <div class="card-header">Сельское хозяйство по регионам</div>
+          <div class="chart-switcher">
+            <label>
+              <input type="radio" v-model="selectedChart" value="chart1" /> в % к предыдущему году
+            </label>
+            <label>
+              <input type="radio" v-model="selectedChart" value="chart2" /> млрд. тг
+            </label>
+          </div>
+          <div class="card-content">
+            <div class="road-container">
+              <radio-chart height="100%" :data-source="barSixChartData" />
+            </div>
+          </div>
+        </div>
+      </template>
+    </slider-window>
   </div>
 </template>
 
@@ -222,6 +166,7 @@ import RoadChart from './RoadChart.vue';
 import ValChart from './ValChart.vue';
 import RadioChart from './RadioChart.vue';
 import CountUp from 'vue-countup-v2';
+import SliderWindow from './SliderWindow.vue';
 
 export default {
   name: 'MapCard',
@@ -231,18 +176,10 @@ export default {
     ValChart,
     RadioChart,
     CountUp,
+    SliderWindow,
   },
   data() {
     return {
-      customLabels: [],
-      apexChart: null,
-      currentPageIndex: 0,
-      pages: [
-        'map-card', 
-        'placeholder',
-      ],
-      isButtonOnRight: true,
-      transitionName: 'slide-left',
       sortBy: 'name',
       sortDesc: false,
       selectedRegionId: null,
@@ -256,7 +193,7 @@ export default {
       ],
       valChartData: {
       categories: ['2023', '2022', '2021'],
-      colors: ['#f3a100', '#a0c913'],
+      colors: ['#8BC34A', '#FFB74D'],
       series: [
         {
           name: 'Растениеводство',
@@ -267,10 +204,8 @@ export default {
           data: [179.2, 263, 219.9],
         },
       ],
-      percentChanges: [
-        { year: '2023', change: '-16.8%' },
-        { year: '2022', change: '+12.3%' },
-        { year: '2021', change: '-12.2%' },
+      customTotals: [
+        ['-16.8%', 757.5], ['+12.3%', 1173.6], ['-12.2%', 900]
       ],
     },
       regionItems: [
@@ -504,26 +439,8 @@ export default {
 
   window.addEventListener('resize', this.calculateLabelPositions);
   },
-  beforeDestroy() {
-    if (this._chartMutationObserver) {
-      this._chartMutationObserver.disconnect();
-    }
   
-  },
   watch: {
-    currentPageIndex(newIndex) {
-      if (newIndex !== 1) {
-        if (this.mutationObserver) {
-          this.mutationObserver.disconnect();
-          this.mutationObserver = null;
-        }
-        window.removeEventListener('resize', this.calculateLabelPositions);
-        if (this.retryTimeout) {
-          clearTimeout(this.retryTimeout);
-        }
-        this.customLabels = [];
-      }
-    },
     valChartData: {
       handler() {
         this.$nextTick(() => {
@@ -536,23 +453,6 @@ export default {
   
   
   methods: {
-    onChartReady(chartInstance) {
-      this.apexChart = chartInstance;
-      this.calculateLabelPositions();
-      const chartEl = chartInstance?.el;
-      if (chartEl) {
-        const observer = new MutationObserver(() => {
-          this.calculateLabelPositions();
-        });
-        observer.observe(chartEl, {
-          childList: true,
-          subtree: true,
-          attributes: true,
-        });
-        this._chartMutationObserver = observer;
-      }
-    },
-    
     calculateLabelPositions() {
       this.$nextTick(() => {
         const chartEl = this.$refs.chartContainer?.querySelector('.apexcharts-inner');
@@ -567,10 +467,10 @@ export default {
         this.customLabels = this.valChartData.categories.map((category, index) => {
           const labelEl = yLabels[index];
           const labelBox = labelEl?.getBoundingClientRect();
-          const top = labelBox ? labelBox.top - containerRect.top - -30 : 0;
+          const top = labelBox ? labelBox.top - containerRect.top - -40 : 0;
 
           const barRect = barRects[index]?.getBoundingClientRect();
-          const left = barRect ? (barRect.right - containerRect.left + 10) : 0;
+          const left = barRect ? (barRect.right - containerRect.left + 8) : 0;
 
 
           const percentChange = this.valChartData.percentChanges?.find((item) => item.year === category);
@@ -596,17 +496,6 @@ export default {
       });
     },
 
-    navigate() {
-      if (this.isButtonOnRight) {
-        this.transitionName = 'slide-left';
-        this.currentPageIndex = (this.currentPageIndex + 1) % this.pages.length;
-        this.isButtonOnRight = false;
-      } else {
-        this.transitionName = 'slide-right';
-        this.currentPageIndex = (this.currentPageIndex - 1 + this.pages.length) % this.pages.length;
-        this.isButtonOnRight = true;
-      }
-    },
     handleRegionSelect(regionId) {
       this.selectedRegionId = regionId;
     },
@@ -720,31 +609,40 @@ export default {
       };
     },
     customSort(items, sortBy, sortDesc) {
-      if (!sortBy || !sortBy.length) return items;
+  if (!sortBy || !sortBy.length) return items;
 
-      return items.sort((a, b) => {
-        const key = sortBy[0];
-        const desc = sortDesc[0];
-        let valA = a[key];
-        let valB = b[key];
+  const key = sortBy[0];
+  const desc = sortDesc[0];
 
-        if (typeof valA === 'object' && valA !== null) {
-          valA = parseFloat(valA['2024']) || 0;
-        }
-        if (typeof valB === 'object' && valB !== null) {
-          valB = parseFloat(valB['2024']) || 0;
-        }
+  return items.slice().sort((a, b) => {
+    let valA = a[key];
+    let valB = b[key];
 
-        if (valA < valB) return desc ? 1 : -1;
-        if (valA > valB) return desc ? -1 : 1;
-        return 0;
-      });
-    },
+    if (typeof valA === 'object' && valA !== null) {
+      valA = parseFloat(valA['2024']) || 0;
+    }
+    if (typeof valB === 'object' && valB !== null) {
+      valB = parseFloat(valB['2024']) || 0;
+    }
+
+    if (typeof valA === 'string' && typeof valB === 'string') {
+      valA = valA.toLowerCase();
+      valB = valB.toLowerCase();
+    }
+
+    if (valA < valB) return desc ? 1 : -1;
+    if (valA > valB) return desc ? -1 : 1;
+    return 0;
+  });
+}
+
+
   },
   computed: {
     sortedRegions() {
       return [...this.regionItems].sort((a, b) => a.name.localeCompare(b.name));
     },
+
     selectedRegion() {
       return this.regionItems.find(
         (region) => String(region.id) === String(this.selectedRegionId || '14')
@@ -773,17 +671,43 @@ export default {
       };
     },
     barSixChartData() {
-      const regions = this.regionItems.filter(item => item.id !== '14' && item.name !== 'СКО' && item.economicData);
-      return {
-        categories: regions.map(item => item.name),
-        series: [{
-          data: this.selectedChart === 'chart1'
-            ? regions.map(item => item.economicData.percentChange)
-            : regions.map(item => item.economicData.productionVolume),
-        }],
-        
-      };
-    },
+  const key = this.sortBy;
+  const desc = this.sortDesc;
+
+  const regions = this.regionItems
+    .filter(item => item.id !== '14' && item.name !== 'СКО' && item.economicData)
+    .slice()
+    .sort((a, b) => {
+      let valA = a[key];
+      let valB = b[key];
+
+      if (typeof valA === 'object' && valA !== null) {
+        valA = parseFloat(valA['2024']) || 0;
+      }
+      if (typeof valB === 'object' && valB !== null) {
+        valB = parseFloat(valB['2024']) || 0;
+      }
+
+      if (typeof valA === 'string' && typeof valB === 'string') {
+        valA = valA.toLowerCase();
+        valB = valB.toLowerCase();
+      }
+
+      if (valA < valB) return desc ? 1 : -1;
+      if (valA > valB) return desc ? -1 : 1;
+      return 0;
+    });
+
+  return {
+    categories: regions.map(item => item.name),
+    series: [{
+      data: this.selectedChart === 'chart1'
+        ? regions.map(item => item.economicData.percentChange)
+        : regions.map(item => item.economicData.productionVolume),
+    }],
+  };
+}
+
   },
 };
 </script>
