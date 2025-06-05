@@ -657,7 +657,7 @@ export default {
     });
 
   return {
-    categories: regions.map(item => item.shortName || item.name), // Используем shortName, если есть, иначе name
+    categories: regions.map(item => item.shortName || item.name),
     series: [{
       data: this.selectedChart === 'chart1'
         ? regions.map(item => item.economicData.percentChange)
