@@ -212,6 +212,7 @@ export default {
         {
           id: 4,
           name: 'Айыртауский район',
+          shortName: 'Айыртауский',
           svgClass: 'fil4',
           percentage: '62.5%',
           fertility: { 2023: '11.24', 2024: '9.82' },
@@ -226,6 +227,7 @@ export default {
         {
           id: 5,
           name: 'Акжарский район',
+          shortName: 'Акжарский',
           svgClass: 'fil5',
           percentage: '100%',
           fertility: { 2023: '14.11', 2024: '12.06' },
@@ -240,6 +242,7 @@ export default {
         {
           id: 10,
           name: 'Аккайынский район',
+          shortName: 'Аккайынский',
           svgClass: 'fil10',
           percentage: '',
           fertility: { 2023: '9.29', 2024: '7.72' },
@@ -254,6 +257,7 @@ export default {
         {
           id: 3,
           name: 'Район им. Габита Мусрепова',
+          shortName: 'им. Габита Мусрепова',
           svgClass: 'fil3',
           percentage: '100%',
           fertility: { 2023: '9.68', 2024: '8.71' },
@@ -268,6 +272,7 @@ export default {
         {
           id: 9,
           name: 'Есильский район',
+          shortName: 'Есильский',
           svgClass: 'fil9',
           percentage: '17.1%',
           fertility: { 2023: '9.37', 2024: '9.02' },
@@ -282,6 +287,7 @@ export default {
         {
           id: 7,
           name: 'Жамбылский район',
+          shortName: 'Жамбылский',
           svgClass: 'fil7',
           percentage: '0%',
           fertility: { 2023: '10.81', 2024: '11.28' },
@@ -296,6 +302,7 @@ export default {
         {
           id: 1,
           name: 'Кызылжарский район',
+          shortName: 'Кызылжарский',
           svgClass: 'fil1',
           percentage: '76%',
           fertility: { 2023: '9.97', 2024: '9.29' },
@@ -310,6 +317,7 @@ export default {
         {
           id: 6,
           name: 'Район Магжана Жумабаева',
+          shortName: 'Магжана Жумабаева',
           svgClass: 'fil6',
           percentage: '36%',
           fertility: { 2023: '9.12', 2024: '10.61' },
@@ -324,6 +332,7 @@ export default {
         {
           id: 12,
           name: 'Мамлютский район',
+          shortName: 'Мамлютский',
           svgClass: 'fil12',
           percentage: '',
           fertility: { 2023: '10.59', 2024: '10.23' },
@@ -338,6 +347,7 @@ export default {
         {
           id: 2,
           name: 'Тайыншинский район',
+          shortName: 'Тайыншинский',
           svgClass: 'fil2',
           percentage: '21.7%',
           fertility: { 2023: '10.43', 2024: '10.02' },
@@ -352,6 +362,7 @@ export default {
         {
           id: 11,
           name: 'Тимирязевский район',
+          shortName: 'Тимирязевский',
           svgClass: 'fil11',
           percentage: '',
           fertility: { 2023: '9.31', 2024: '9.92' },
@@ -366,6 +377,7 @@ export default {
         {
           id: 13,
           name: 'Уалихановский район',
+          shortName: 'Уалихановский',
           svgClass: 'fil13',
           percentage: '35.3%',
           fertility: { 2023: '16.09', 2024: '14.61' },
@@ -380,6 +392,7 @@ export default {
         {
           id: 8,
           name: 'Район Шал акына',
+          shortName: 'Шал акына',
           svgClass: 'fil8',
           percentage: '100%',
           fertility: { 2023: '11.29', 2024: '11.07' },
@@ -394,6 +407,7 @@ export default {
         {
           id: '1-city',
           name: 'г. Петропавловск',
+          shortName: 'г. Петропавловск',
           svgClass: 'fnt-city',
           percentage: '○ г. Петропавловск - 87.3%',
           fertility: { 2023: '10.36', 2024: '9.53' },
@@ -430,71 +444,15 @@ export default {
     };
   },
   mounted() {
-    this.$nextTick(() => {
-    setTimeout(() => {
-      this.calculateLabelPositions();
-      this.$emit('chart-ready'); 
-    }, 500); 
-  });
-
-  window.addEventListener('resize', this.calculateLabelPositions);
+    
   },
   
   watch: {
-    valChartData: {
-      handler() {
-        this.$nextTick(() => {
-          this.calculateLabelPositions();
-        });
-      },
-      deep: true,
-    },
+    
   },
   
   
   methods: {
-    calculateLabelPositions() {
-      this.$nextTick(() => {
-        const chartEl = this.$refs.chartContainer?.querySelector('.apexcharts-inner');
-        if (!chartEl) return;
-
-        const barRects = chartEl.querySelectorAll('.apexcharts-bar-series .apexcharts-bar-area');
-        const yLabels = chartEl.querySelectorAll('.apexcharts-yaxis-texts-g text');
-        const containerRect = this.$refs.chartContainer.getBoundingClientRect();
-
-        if (barRects.length === 0 || yLabels.length === 0) return;
-
-        this.customLabels = this.valChartData.categories.map((category, index) => {
-          const labelEl = yLabels[index];
-          const labelBox = labelEl?.getBoundingClientRect();
-          const top = labelBox ? labelBox.top - containerRect.top - -40 : 0;
-
-          const barRect = barRects[index]?.getBoundingClientRect();
-          const left = barRect ? (barRect.right - containerRect.left + 8) : 0;
-
-
-          const percentChange = this.valChartData.percentChanges?.find((item) => item.year === category);
-          const change = percentChange?.change || '0%';
-          const isNegative = change.startsWith('-');
-          const color = isNegative ? '#FF4D4F' : '#52C41A';
-
-          let total = 0;
-          this.valChartData.series.forEach((serie) => {
-            if (serie.data && typeof serie.data[index] === 'number') {
-              total += serie.data[index];
-            }
-          });
-
-          return {
-            top,
-            left,
-            change,
-            total: total.toFixed(2),
-            color,
-          };
-        });
-      });
-    },
 
     handleRegionSelect(regionId) {
       this.selectedRegionId = regionId;
@@ -699,14 +657,14 @@ export default {
     });
 
   return {
-    categories: regions.map(item => item.name),
+    categories: regions.map(item => item.shortName || item.name), // Используем shortName, если есть, иначе name
     series: [{
       data: this.selectedChart === 'chart1'
         ? regions.map(item => item.economicData.percentChange)
         : regions.map(item => item.economicData.productionVolume),
     }],
   };
-}
+},
 
   },
 };
