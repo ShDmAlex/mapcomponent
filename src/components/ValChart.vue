@@ -19,7 +19,7 @@ export default {
   props: {
     width: {
       type: [Number, String],
-      default: '90%',
+      default: '100%',
     },
     dataSource: {
       type: Object,
