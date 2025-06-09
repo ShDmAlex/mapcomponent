@@ -257,7 +257,7 @@ export default {
         {
           id: 3,
           name: 'Район им. Габита Мусрепова',
-          shortName: 'им. Габита Мусрепова',
+          shortName: 'им. Г.Мусрепова',
           svgClass: 'fil3',
           percentage: '100%',
           fertility: { 2023: '9.68', 2024: '8.71' },
@@ -317,7 +317,7 @@ export default {
         {
           id: 6,
           name: 'Район Магжана Жумабаева',
-          shortName: 'Магжана Жумабаева',
+          shortName: 'М.Жумабаева',
           svgClass: 'fil6',
           percentage: '36%',
           fertility: { 2023: '9.12', 2024: '10.61' },
