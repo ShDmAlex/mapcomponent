@@ -13,11 +13,13 @@ import ApexChart from 'vue-apexcharts';
 
 export default {
   name: 'ValChart',
-  components: { ApexChart },
+  components: {
+    ApexChart,
+  },
   props: {
     width: {
       type: [Number, String],
-      default: '100%',
+      default: '90%',
     },
     dataSource: {
       type: Object,
@@ -46,56 +48,57 @@ export default {
             enabled: true,
             speed: 800,
           },
-          toolbar: { show: false },
-          
+          toolbar: {
+            show: false,
+          },
         },
         dataLabels: {
+          enabled: true,
           position: 'center',
-      enabled: true,
-  offsetX: -6,
-  style: {
-    fontSize: '11px',
-    fontWeight: 400,
-    fontFamily: 'Montserrat-Regular',
-    colors: ['#ffffff'],
-  },
+          offsetX: -6,
+          style: {
+            fontSize: '11px',
+            fontWeight: 400,
+            fontFamily: 'Montserrat-Regular, sans-serif',
+            colors: ['#ffffff'],
+          },
         },
-
-
         plotOptions: {
           bar: {
             horizontal: true,
             barHeight: '70%',
             dataLabels: {
-  total: {
-    enabled: this.horizontalTotal,
-    offsetX: 30,
-    offsetY: -10,
-    style: {
-      color: '#fff',
-      fontSize: '11px',
-      fontWeight: 'normal',
-      fontFamily: 'Montserrat-Regular',
-      
-      
-    },
-    formatter: function (val, opts) {
-  const index = opts.dataPointIndex;
-  const customTotals = opts.w.config.customTotals || [];
-  const totalEntry = customTotals[index];
-  if (!totalEntry) return '';
-  const [percent, total] = totalEntry;
-  const color = percent.includes('-') ? '#f44336' : '#43A047';
-  opts.w.config.plotOptions.bar.dataLabels.total.style.color = color;
-  return `${percent}\n${total.toFixed(1)}`;
-}
-
-  }, 
-    },
+              total: {
+                enabled: this.horizontalTotal,
+                offsetX: 10,
+                offsetY: -10,
+                style: {
+                  color: '#fff',
+                  fontSize: '11px',
+                  fontWeight: 'normal',
+                  fontFamily: 'Montserrat-Regular, sans-serif',
+                  whiteSpace: 'pre-line',
+                },
+                formatter: function (val, opts) {
+                  const index = opts.dataPointIndex;
+                  const customTotals = opts.w.config.customTotals || [];
+                  const totalEntry = customTotals[index];
+                  if (!totalEntry) return '';
+                  const [percent, total] = totalEntry;
+                  const color = percent.includes('-') ? '#f44336' : '#43A047';
+                  opts.w.config.plotOptions.bar.dataLabels.total.style.color = color;
+                  return [percent, total.toFixed(1)];
+                },
+              },
+            },
           },
         },
-        grid: { show: false },
-        stroke: { show: false },
+        grid: {
+          show: false,
+        },
+        stroke: {
+          show: false,
+        },
         tooltip: {
           shared: false,
           intersect: true,
@@ -118,16 +121,30 @@ export default {
               fontSize: '11px',
             },
           },
-          axisBorder: { show: true, color: '#4b3f3f' },
-          axisTicks: { show: true, color: '#4b3f3f' },
+          axisBorder: {
+            show: true,
+            color: '#4b3f3f',
+          },
+          axisTicks: {
+            show: true,
+            color: '#4b3f3f',
+          },
         },
         yaxis: {
           labels: {
             offsetX: 5,
-            style: { colors: '#ffffff' },
+            style: {
+              colors: '#ffffff',
+            },
           },
-          axisBorder: { show: true, color: '#4b3f3f' },
-          axisTicks: { show: true, color: '#4b3f3f' },
+          axisBorder: {
+            show: true,
+            color: '#4b3f3f',
+          },
+          axisTicks: {
+            show: true,
+            color: '#4b3f3f',
+          },
         },
         legend: {
           position: 'bottom',
@@ -154,7 +171,9 @@ export default {
             breakpoint: 1000,
             options: {
               plotOptions: {
-                bar: { horizontal: true },
+                bar: {
+                  horizontal: true,
+                },
               },
             },
           },
@@ -165,4 +184,3 @@ export default {
   },
 };
 </script>
-
