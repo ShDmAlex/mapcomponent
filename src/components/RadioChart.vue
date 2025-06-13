@@ -32,17 +32,25 @@ export default {
         chart: {
           type: 'bar',
           height: this.height,
-          toolbar: { show: false },
+          toolbar: {
+            show: false,
+          },
         },
         plotOptions: {
           bar: {
             colors: {
               ranges: [
-                { from: -100, to: 0, color: '#f44336' }, 
+                {
+                  from: -100,
+                  to: 0,
+                  color: '#f44336',
+                },
               ],
             },
             columnWidth: '80%',
-            dataLabels: { position: 'top' },
+            dataLabels: {
+              position: 'top',
+            },
           },
         },
         dataLabels: {
@@ -55,27 +63,50 @@ export default {
             colors: ['#ffffff'],
           },
         },
-        grid: { show: false },
+        grid: {
+          show: false,
+        },
         yaxis: {
-          axisBorder: { show: true, color: '#4b3f3f' },
-          axisTicks: { show: true, color: '#4b3f3f' },
+          axisBorder: {
+            show: true,
+            color: '#4b3f3f',
+          },
+          axisTicks: {
+            show: true,
+            color: '#4b3f3f',
+          },
           labels: {
             formatter: (y) => y.toFixed(1),
-            style: { colors: '#ffffff', fontSize: '11px' },
+            style: {
+              colors: '#ffffff',
+              fontSize: '11px',
+            },
           },
           title: {
             text: this.dataSource.unit,
-            style: { color: '#ffffff', fontSize: '12px' },
+            style: {
+              color: '#ffffff',
+              fontSize: '12px',
+            },
           },
         },
         xaxis: {
           categories: this.dataSource.categories,
           labels: {
             formatter: (val) => val,
-            style: { colors: '#ffffff', fontSize: '10px' },
+            style: {
+              colors: '#ffffff',
+              fontSize: '10px',
+            },
           },
-          axisBorder: { show: true, color: '#4b3f3f' },
-          axisTicks: { show: true, color: '#4b3f3f' },
+          axisBorder: {
+            show: true,
+            color: '#4b3f3f',
+          },
+          axisTicks: {
+            show: true,
+            color: '#4b3f3f',
+          },
         },
         tooltip: {
           shared: false,
@@ -95,7 +126,7 @@ export default {
             `;
           },
         },
-        colors: ['#43a047'], 
+        colors: ['#43a047'],
       };
     },
   },

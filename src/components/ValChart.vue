@@ -1,13 +1,11 @@
 <template>
-  <div style="position: relative; height: 100%;">
-    <ApexChart
-      type="bar"
-      height="100%"
-      :width="width"
-      :options="chartOptions"
-      :series="dataSource.series"
-    />
-  </div>
+  <ApexChart
+    type="bar"
+    height="100%"
+    :width="width"
+    :options="chartOptions"
+    :series="dataSource.series"
+  />
 </template>
 
 <script>
@@ -15,11 +13,13 @@ import ApexChart from 'vue-apexcharts';
 
 export default {
   name: 'ValChart',
-  components: { ApexChart },
+  components: {
+    ApexChart,
+  },
   props: {
     width: {
       type: [Number, String],
-      default: '95%',
+      default: '100%',
     },
     dataSource: {
       type: Object,
@@ -28,9 +28,14 @@ export default {
         series: [],
         categories: [],
         colors: [],
-        percentChanges: [],
+        customTotals: [],
       }),
     },
+  },
+  data() {
+    return {
+      horizontalTotal: true,
+    };
   },
   computed: {
     chartOptions() {
@@ -43,30 +48,57 @@ export default {
             enabled: true,
             speed: 800,
           },
-          toolbar: { show: false },
+          toolbar: {
+            show: false,
+          },
+        },
+        dataLabels: {
+          enabled: true,
+          position: 'center',
+          offsetX: -6,
+          style: {
+            fontSize: '11px',
+            fontWeight: 400,
+            fontFamily: 'Montserrat-Regular, sans-serif',
+            colors: ['#ffffff'],
+          },
         },
         plotOptions: {
           bar: {
             horizontal: true,
             barHeight: '70%',
             dataLabels: {
-              position: 'center',
+              total: {
+                enabled: this.horizontalTotal,
+                offsetX: 10,
+                offsetY: -10,
+                style: {
+                  color: '#fff',
+                  fontSize: '11px',
+                  fontWeight: 'normal',
+                  fontFamily: 'Montserrat-Regular, sans-serif',
+                  whiteSpace: 'pre-line',
+                },
+                formatter: function (val, opts) {
+                  const index = opts.dataPointIndex;
+                  const customTotals = opts.w.config.customTotals || [];
+                  const totalEntry = customTotals[index];
+                  if (!totalEntry) return '';
+                  const [percent, total] = totalEntry;
+                  const color = percent.includes('-') ? '#f44336' : '#43A047';
+                  opts.w.config.plotOptions.bar.dataLabels.total.style.color = color;
+                  return [percent, total.toFixed(1)];
+                },
+              },
             },
           },
         },
-        dataLabels: {
-          enabled: true,
-          offsetX: -6,
-          style: {
-            fontSize: '11px',
-            fontWeight: 400,
-            fontFamily: 'Montserrat-Regular',
-            colors: ['#ffffff'],
-          },
-          formatter: (val) => val.toFixed(1),
+        grid: {
+          show: false,
         },
-        grid: { show: false },
-        stroke: { show: false },
+        stroke: {
+          show: false,
+        },
         tooltip: {
           shared: false,
           intersect: true,
@@ -89,16 +121,30 @@ export default {
               fontSize: '11px',
             },
           },
-          axisBorder: { show: true, color: '#4b3f3f' },
-          axisTicks: { show: true, color: '#4b3f3f' },
+          axisBorder: {
+            show: true,
+            color: '#4b3f3f',
+          },
+          axisTicks: {
+            show: true,
+            color: '#4b3f3f',
+          },
         },
         yaxis: {
           labels: {
             offsetX: 5,
-            style: { colors: '#ffffff' },
+            style: {
+              colors: '#ffffff',
+            },
           },
-          axisBorder: { show: true, color: '#4b3f3f' },
-          axisTicks: { show: true, color: '#4b3f3f' },
+          axisBorder: {
+            show: true,
+            color: '#4b3f3f',
+          },
+          axisTicks: {
+            show: true,
+            color: '#4b3f3f',
+          },
         },
         legend: {
           position: 'bottom',
@@ -125,11 +171,14 @@ export default {
             breakpoint: 1000,
             options: {
               plotOptions: {
-                bar: { horizontal: true },
+                bar: {
+                  horizontal: true,
+                },
               },
             },
           },
         ],
+        customTotals: this.dataSource.customTotals,
       };
     },
   },
