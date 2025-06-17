@@ -5,7 +5,7 @@
     gap: 10px;
     font-family: 'Montserrat-Regular';
     padding-right: 10px;
-    justify-content: flex-start;
+    
     flex-wrap: wrap;
     
   }
@@ -460,7 +460,6 @@
   left: 90%;
   top: -5px;
   transform: none;
-  
 }
 
 .tooltip.popover .checkmark {
@@ -485,45 +484,33 @@
 .page-wrapper {
   position: relative;
   width: 100%;
-  min-height: 100vh;
-  overflow: hidden;
+}
+
+.v-window__prev {
+  position: absolute;
+  top: 46%;
+  left: -15px;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.v-window__next {
+  position: absolute;
+  top: 46%;
+  right: 32px;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.content-window-slider {
+  position: relative; 
+  height: 100%; 
 }
 
 .page-content {
-  width: 100%;
-  height: 100%;
-}
-
-.slider-wrapper {
   position: relative;
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
-
-.page-navigation {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 100;
-}
-
-.page-navigation.on-right {
-  right: 10px;
-}
-
-.page-navigation.on-left {
-  left: 10px;
-}
-
-.nav-btn {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-.nav-btn:hover {
-  background: transparent !important;
-}
+  
+} 
 
 .chart-switcher {
   display: flex;

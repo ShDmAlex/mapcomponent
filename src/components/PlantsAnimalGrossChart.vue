@@ -12,7 +12,7 @@
 import ApexChart from 'vue-apexcharts';
 
 export default {
-  name: 'ValChart',
+  name: 'PlantsAnimalGrossChart',
   components: {
     ApexChart,
   },
@@ -44,6 +44,7 @@ export default {
           type: 'bar',
           stacked: true,
           height: '100%',
+          fontFamily: 'Montserrat-Regular',
           animations: {
             enabled: true,
             speed: 800,
@@ -59,7 +60,6 @@ export default {
           style: {
             fontSize: '11px',
             fontWeight: 400,
-            fontFamily: 'Montserrat-Regular, sans-serif',
             colors: ['#ffffff'],
           },
         },
@@ -76,19 +76,17 @@ export default {
                   color: '#fff',
                   fontSize: '11px',
                   fontWeight: 'normal',
-                  fontFamily: 'Montserrat-Regular, sans-serif',
                   whiteSpace: 'pre-line',
                 },
                 formatter: function (val, opts) {
-                  const index = opts.dataPointIndex;
-                  const customTotals = opts.w.config.customTotals || [];
-                  const totalEntry = customTotals[index];
-                  if (!totalEntry) return '';
-                  const [percent, total] = totalEntry;
+                  if (!this.horizontalTotal) return '';
+                  const customData = this?.dataSource?.customTotals[opts.dataPointIndex];
+                  if (!customData) return '';
+                  const [percent, total] = customData;
                   const color = percent.includes('-') ? '#f44336' : '#43A047';
                   opts.w.config.plotOptions.bar.dataLabels.total.style.color = color;
                   return [percent, total.toFixed(1)];
-                },
+                }.bind(this),
               },
             },
           },
@@ -150,7 +148,6 @@ export default {
           position: 'bottom',
           offsetY: -10,
           fontSize: '9px',
-          fontFamily: 'Montserrat-Regular, sans-serif',
           markers: {
             width: 10,
             height: 10,
@@ -166,19 +163,6 @@ export default {
           },
         },
         colors: this.dataSource.colors,
-        responsive: [
-          {
-            breakpoint: 1000,
-            options: {
-              plotOptions: {
-                bar: {
-                  horizontal: true,
-                },
-              },
-            },
-          },
-        ],
-        customTotals: this.dataSource.customTotals,
       };
     },
   },
