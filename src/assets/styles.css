@@ -487,18 +487,14 @@
 }
 
 .v-window__prev {
-  position: absolute;
   top: 46%;
   left: -15px;
-  transform: translateY(-50%);
   z-index: 2;
 }
 
 .v-window__next {
-  position: absolute;
   top: 46%;
   right: 32px;
-  transform: translateY(-50%);
   z-index: 2;
 }
 
@@ -509,7 +505,6 @@
 
 .page-content {
   position: relative;
-  
 } 
 
 .chart-switcher {

@@ -162,7 +162,7 @@
       <v-window-item>
         <div class="grid-container second-page">
           <div class="chart-card chart-card-five">
-            <div class="card-header">Сельское хозяйство</div>
+            <div class="card-header">Валовый выпуск, млрд. тенге</div>
             <div class="card-content">
               <div class="road-container" ref="chartContainer">
                 <plants-animal-gross-chart height="100%" :data-source="grossChartData" />
