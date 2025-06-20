@@ -11,7 +11,7 @@
 import ApexChart from 'vue-apexcharts';
 
 export default {
-  name: 'RadioChart',
+  name: 'PositiveNegativeChart',
   components: {
     ApexChart,
   },
@@ -32,6 +32,7 @@ export default {
         chart: {
           type: 'bar',
           height: this.height,
+          fontFamily: 'Montserrat-Regular',
           toolbar: {
             show: false,
           },
@@ -59,7 +60,6 @@ export default {
           formatter: (val) => val.toFixed(1),
           style: {
             fontSize: '10px',
-            fontFamily: 'Montserrat-Regular, sans-serif',
             colors: ['#ffffff'],
           },
         },
@@ -112,7 +112,6 @@ export default {
           shared: false,
           intersect: true,
           style: {
-            fontFamily: 'Montserrat-Regular, sans-serif',
             fontSize: '10px',
           },
           custom: ({ series, seriesIndex, dataPointIndex }) => {
