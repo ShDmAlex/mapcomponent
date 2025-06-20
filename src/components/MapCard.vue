@@ -61,9 +61,9 @@
                   class="custom-table elevation-1"
                   disable-pagination
                   hide-default-footer
-                >
-                <template slot="item.fertility" slot-scope="{ item }">
-                  <div class="progress-container">
+                  >
+                  <template slot="item.fertility" slot-scope="{ item }">
+                    <div class="progress-container">
                       <v-progress-linear
                         :value="getFertilityPercent(item)"
                         height="18"
@@ -73,8 +73,8 @@
                       <div class="progress-label">{{ item.fertility['2024'] }}</div>
                     </div>
                   </template>
-                <template slot="item.mortality" slot-scope="{ item }">
-                  <div class="progress-container">
+                  <template slot="item.mortality" slot-scope="{ item }">
+                    <div class="progress-container">
                       <v-progress-linear
                         :value="getMortalityPercent(item)"
                         height="18"
@@ -88,7 +88,7 @@
               </div>
             </div>
           </div>
-        <div class="chart-card chart-card-third">
+          <div class="chart-card chart-card-third">
             <div class="card-header">Смертность и рождаемость, чел. на 1 тыс. чел.</div>
             <div class="card-content">
               <div class="stats-container" v-if="selectedRegion">
@@ -583,26 +583,21 @@ export default {
     },
     customSort(items, sortBy, sortDesc) {
       if (!sortBy || !sortBy.length) return items;
-
       const key = sortBy[0];
       const desc = sortDesc[0];
-
       return items.slice().sort((a, b) => {
         let valA = a[key];
         let valB = b[key];
-
         if (typeof valA === 'object' && valA !== null) {
           valA = parseFloat(valA['2024']) || 0;
         }
         if (typeof valB === 'object' && valB !== null) {
           valB = parseFloat(valB['2024']) || 0;
         }
-
         if (typeof valA === 'string' && typeof valB === 'string') {
           valA = valA.toLowerCase();
           valB = valB.toLowerCase();
         }
-
         if (valA < valB) return desc ? 1 : -1;
         if (valA > valB) return desc ? -1 : 1;
         return 0;
@@ -643,37 +638,32 @@ export default {
     barSixChartData() {
       const key = this.sortBy;
       const desc = this.sortDesc;
-
       const regions = this.regionItems
         .filter(item => item.id !== '14' && item.name !== 'СКО' && item.economicData)
         .slice()
         .sort((a, b) => {
           let valA = a[key];
           let valB = b[key];
-
           if (typeof valA === 'object' && valA !== null) {
             valA = parseFloat(valA['2024']) || 0;
           }
           if (typeof valB === 'object' && valB !== null) {
             valB = parseFloat(valB['2024']) || 0;
           }
-
           if (typeof valA === 'string' && typeof valB === 'string') {
             valA = valA.toLowerCase();
             valB = valB.toLowerCase();
           }
-
           if (valA < valB) return desc ? 1 : -1;
           if (valA > valB) return desc ? -1 : 1;
           return 0;
         });
-
       return {
         categories: regions.map(item => item.shortName || item.name),
         series: [{
           data: this.selectedChart === 'chart1'
-            ? regions.map(item => item.economicData.percentChange)
-            : regions.map(item => item.economicData.productionVolume),
+          ? regions.map(item => item.economicData.percentChange)
+          : regions.map(item => item.economicData.productionVolume),
         }],
       };
     },
