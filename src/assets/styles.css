@@ -500,3 +500,6 @@
 .chart-switcher input[type="radio"]:checked::before {
   background-color: #ffffff;
 }
+.v-window-item {
+  transition: transform 0.5s ease-in-out; 
+}
