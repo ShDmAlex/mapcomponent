@@ -1,8 +1,8 @@
 <template>
   <ApexChart
     type="bar"
-    height="100%"
     :width="width"
+    :height="height"
     :options="chartOptions"
     :series="dataSource.series"
   />
@@ -12,12 +12,16 @@
 import ApexChart from 'vue-apexcharts';
 
 export default {
-  name: 'PlantsAnimalGrossChart',
+  name: 'HorizontalStackBars',
   components: {
     ApexChart,
   },
   props: {
     width: {
+      type: [Number, String],
+      default: '100%',
+    },
+    height: {
       type: [Number, String],
       default: '100%',
     },
