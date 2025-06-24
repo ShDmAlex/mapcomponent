@@ -503,3 +503,11 @@
 .v-window-item {
   transition: transform 0.5s ease-in-out; 
 }
+.content-window-slider .custom-prev-btn,
+.content-window-slider .custom-next-btn {
+  position: absolute !important;
+  top: 50%; 
+  transform: translateY(30%);
+  z-index: 1;
+  
+}

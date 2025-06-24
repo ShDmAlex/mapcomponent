@@ -114,18 +114,23 @@ export default {
           style: {
             fontSize: '10px',
           },
-          custom: ({ series, seriesIndex, dataPointIndex }) => {
-            const category = this.dataSource.categories[dataPointIndex];
+          custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+            const category = w.config.xaxis.categories[dataPointIndex];
             const value = series[seriesIndex][dataPointIndex];
-            const color = this.dataSource.unit === '%' && value < 0 ? '#f44336' : '#43a047';
+            let color;
+            if (value < 0) {
+              color = '#f44336'; 
+            } else {
+              color = '#43a047'; 
+            }
             return `
-              <div style="padding: 5px; background: ${color}; color: #fff; border-radius: 0; font-size: 10px; border: none;">
-                <strong>${category}:</strong> ${value.toFixed(1)} ${this.dataSource.unit}
-              </div>
+            <div style="padding: 5px; background: ${color}; color: #fff; border-radius: 0; font-size: 10px; border: none;">
+            <strong>${category}:</strong> ${value}
+            </div>
             `;
-          },
+          }
         },
-        colors: ['#43a047'],
+        colors: ['#43a047', '#f44336'],
       };
     },
   },
