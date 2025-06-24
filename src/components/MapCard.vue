@@ -1,10 +1,8 @@
 <template>
   <div class="page-wrapper">
     <v-window
-      v-model="currentPage"
       show-arrows
-      class="content-window-slider"
-      transition="slide-x-transition">
+      class="content-window-slider">
       <template v-slot:prev="{ on, attrs }">
         <v-btn
           dark
